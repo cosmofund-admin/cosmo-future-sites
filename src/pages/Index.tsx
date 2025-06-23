@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import Header from '../components/Header';
@@ -11,19 +10,19 @@ import Footer from '../components/Footer';
 
 const Index = () => {
   return (
-    <LanguageProvider>
-      <div className="min-h-screen bg-white">
-        <Header />
-        <main>
-          <HeroSection />
-          <ServicesSection />
-          <CasesSection />
-          <BlogSection />
+    <div className="min-h-screen bg-white">
+      <Header />
+      <main>
+        <HeroSection />
+        <ServicesSection />
+        <CasesSection />
+        <BlogSection />
+        <section id="contact">
           <ContactSection />
-        </main>
-        <Footer />
-      </div>
-    </LanguageProvider>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 };
 

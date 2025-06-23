@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Calendar, User, Search } from 'lucide-react';
+import { Calendar, User, Search, ArrowRight } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -8,62 +8,87 @@ const Blog: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все');
 
-  const categories = ['Все', 'Дизайн', 'SEO', 'Производительность', 'React', 'JavaScript'];
+  const categories = ['Все', 'SEO', 'Дизайн', 'Производительность', 'React', 'JavaScript', 'Маркетинг'];
   
   const articles = [
     {
       id: 1,
-      title: 'Топ-10 трендов веб-дизайна в 2024 году',
-      excerpt: 'Какие тенденции будут определять веб-дизайн в ближайшем будущем. Минимализм, темные темы, анимации...',
-      content: 'Полный текст статьи о трендах веб-дизайна...',
-      author: 'Анна Смирнова',
-      date: '15 января 2024',
-      category: 'Дизайн',
-      readTime: '5 мин',
-      image: '/placeholder.svg',
-      tags: ['дизайн', 'тренды', 'UI/UX']
+      title: 'SEO-оптимизация в 2024: Полное руководство для начинающих',
+      excerpt: 'Узнайте, как правильно оптимизировать сайт для поисковых систем. Ключевые слова, мета-теги, структура, внутренняя перелинковка и технические аспекты SEO.',
+      content: 'Подробное руководство по SEO-оптимизации сайтов...',
+      author: 'Михаил Петров',
+      date: '20 января 2024',
+      category: 'SEO',
+      readTime: '12 мин',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
+      tags: ['SEO', 'поисковая оптимизация', 'Google', 'Яндекс']
     },
     {
       id: 2,
-      title: 'SEO-оптимизация: полное руководство для начинающих',
-      excerpt: 'Как правильно оптимизировать сайт для поисковых систем. Ключевые слова, мета-теги, структура...',
-      content: 'Подробное руководство по SEO-оптимизации...',
-      author: 'Михаил Петров',
-      date: '12 января 2024',
-      category: 'SEO',
-      readTime: '8 мин',
-      image: '/placeholder.svg',
-      tags: ['SEO', 'поисковая оптимизация', 'Google']
+      title: 'Как увеличить скорость загрузки сайта: 15 проверенных способов',
+      excerpt: 'Оптимизация изображений, минификация CSS/JS, использование CDN, lazy loading и другие методы ускорения сайта для лучшего SEO.',
+      content: 'Подробная статья об оптимизации скорости...',
+      author: 'Елена Волкова',
+      date: '18 января 2024',
+      category: 'Производительность',
+      readTime: '10 мин',
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+      tags: ['производительность', 'оптимизация', 'PageSpeed', 'Core Web Vitals']
     },
     {
       id: 3,
-      title: 'Почему скорость загрузки сайта критично важна',
-      excerpt: 'Влияние производительности на конверсию и ранжирование. Методы оптимизации и инструменты...',
-      content: 'Статья о важности скорости загрузки...',
-      author: 'Елена Волкова',
-      date: '10 января 2024',
-      category: 'Производительность',
-      readTime: '6 мин',
-      image: '/placeholder.svg',
-      tags: ['производительность', 'оптимизация', 'PageSpeed']
+      title: 'Семантическая верстка и микроразметка для SEO',
+      excerpt: 'Правильная HTML5 семантика, Schema.org разметка, Open Graph и Twitter Cards для улучшения видимости в поисковых системах.',
+      content: 'Статья о семантической верстке...',
+      author: 'Анна Смирнова',
+      date: '15 января 2024',
+      category: 'SEO',
+      readTime: '8 мин',
+      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
+      tags: ['HTML5', 'семантика', 'микроразметка', 'Schema.org']
     },
     {
       id: 4,
-      title: 'React Hooks: лучшие практики и примеры',
-      excerpt: 'Как эффективно использовать хуки в React приложениях. useState, useEffect, custom hooks...',
-      content: 'Подробный разбор React Hooks...',
+      title: 'Локальное SEO: Как продвинуть бизнес в своем городе',
+      excerpt: 'Google My Business, локальные ключевые слова, отзывы клиентов и NAP-данные для продвижения местного бизнеса.',
+      content: 'Руководство по локальному SEO...',
       author: 'Дмитрий Козлов',
+      date: '12 января 2024',
+      category: 'SEO',
+      readTime: '9 мин',
+      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500',
+      tags: ['локальное SEO', 'Google My Business', 'NAP', 'местный бизнес']
+    },
+    {
+      id: 5,
+      title: 'Тренды веб-дизайна 2024: Что будет актуально',
+      excerpt: 'Нейроморфизм, темные темы, анимации, градиенты и другие тренды дизайна, которые будут популярны в 2024 году.',
+      content: 'Обзор трендов веб-дизайна...',
+      author: 'Анна Смирнова',
+      date: '10 января 2024',
+      category: 'Дизайн',
+      readTime: '7 мин',
+      image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500',
+      tags: ['дизайн', 'тренды', 'UI/UX', '2024']
+    },
+    {
+      id: 6,
+      title: 'Core Web Vitals: Как улучшить показатели сайта',
+      excerpt: 'LCP, FID, CLS - разбираем основные метрики Google для оценки пользовательского опыта и их влияние на ранжирование.',
+      content: 'Подробный гайд по Core Web Vitals...',
+      author: 'Елена Волкова',
       date: '8 января 2024',
-      category: 'React',
-      readTime: '10 мин',
-      image: '/placeholder.svg',
-      tags: ['React', 'hooks', 'JavaScript']
+      category: 'SEO',
+      readTime: '11 мин',
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
+      tags: ['Core Web Vitals', 'UX', 'Google', 'производительность']
     }
   ];
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         article.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === 'Все' || article.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -76,10 +101,10 @@ const Blog: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Блог CosmoLab
+              SEO Блог CosmoLab
             </h1>
             <p className="text-xl text-gray-600">
-              Экспертные статьи о веб-разработке, дизайне и digital-маркетинге
+              Экспертные статьи о SEO, веб-разработке и digital-маркетинге
             </p>
           </div>
 
@@ -90,7 +115,7 @@ const Blog: React.FC = () => {
                 <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Поиск статей..."
+                  placeholder="Поиск статей по SEO, дизайну, производительности..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -120,11 +145,11 @@ const Blog: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article) => (
-            <article key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+            <article key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200 group">
               <img 
                 src={article.image} 
                 alt={article.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="p-6">
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
@@ -134,16 +159,16 @@ const Blog: React.FC = () => {
                   <span>{article.readTime}</span>
                 </div>
                 
-                <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 cursor-pointer">
+                <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 cursor-pointer group-hover:text-blue-600 transition-colors">
                   {article.title}
                 </h2>
                 
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 line-clamp-3">
                   {article.excerpt}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {article.tags.map((tag) => (
+                  {article.tags.slice(0, 3).map((tag) => (
                     <span 
                       key={tag}
                       className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded"
@@ -163,6 +188,11 @@ const Blog: React.FC = () => {
                     <span>{article.date}</span>
                   </div>
                 </div>
+
+                <button className="mt-4 flex items-center text-blue-600 hover:text-blue-700 transition-colors">
+                  Читать полностью
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </button>
               </div>
             </article>
           ))}
@@ -172,6 +202,9 @@ const Blog: React.FC = () => {
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
               По вашему запросу статьи не найдены
+            </p>
+            <p className="text-gray-400 mt-2">
+              Попробуйте изменить поисковый запрос или выберите другую категорию
             </p>
           </div>
         )}
