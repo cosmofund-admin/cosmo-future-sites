@@ -1,28 +1,23 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, Box, Sphere } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 
 const LogoMesh: React.FC = () => {
   const meshRef = useRef<THREE.Group>(null);
-  const sphereRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.2;
       meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
     }
-    if (sphereRef.current) {
-      sphereRef.current.rotation.x += 0.01;
-      sphereRef.current.rotation.y += 0.01;
-    }
   });
 
   return (
     <group ref={meshRef}>
-      <Box ref={sphereRef} args={[1, 1, 1]} position={[0, 0, 0]}>
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial 
           color="#00ffff"
           emissive="#8b5cf6"
@@ -30,8 +25,9 @@ const LogoMesh: React.FC = () => {
           transparent={true}
           opacity={0.8}
         />
-      </Box>
-      <Sphere args={[0.6]} position={[0, 0, 0]}>
+      </mesh>
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.6, 32, 32]} />
         <meshStandardMaterial 
           color="#f472b6"
           emissive="#00ffff"
@@ -40,16 +36,7 @@ const LogoMesh: React.FC = () => {
           opacity={0.6}
           wireframe={true}
         />
-      </Sphere>
-      <Text
-        position={[0, -1.5, 0]}
-        fontSize={0.5}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        CosmoLab
-      </Text>
+      </mesh>
     </group>
   );
 };

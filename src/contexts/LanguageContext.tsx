@@ -1,7 +1,7 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export interface Language {
+interface Language {
   code: string;
   name: string;
   flag: string;
@@ -15,24 +15,13 @@ export const languages: Language[] = [
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
   { code: 'ja', name: '日本語', flag: '🇯🇵' },
   { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
 ];
 
-interface LanguageContextType {
-  currentLanguage: string;
-  setLanguage: (code: string) => void;
-  t: (key: string) => string;
-}
-
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-const translations: Record<string, Record<string, string>> = {
+const translations = {
   ru: {
-    'hero.title': 'Сайт за 24 часа!',
-    'hero.subtitle': 'Лаборатория, где рождаются сайты будущего',
-    'hero.cta': 'Заказать сейчас',
     'nav.home': 'Главная',
     'nav.services': 'Услуги',
     'nav.pricing': 'Цены',
@@ -40,18 +29,21 @@ const translations: Record<string, Record<string, string>> = {
     'nav.blog': 'Блог',
     'nav.about': 'О нас',
     'nav.contact': 'Контакты',
+    'hero.title': 'Лаборатория сайтов будущего',
+    'hero.subtitle': 'Создаём веб-проекты с ультрасовременным дизайном за 24 часа',
+    'hero.cta': 'Заказать сайт',
+    'why.speed': 'Молниеносная скорость',
+    'why.price': 'Честные цены',
+    'why.quality': 'Высокое качество',
+    'why.seo': 'SEO-готовность',
     'services.title': 'Наши услуги',
     'services.landing': 'Лендинг',
     'services.landing.price': '$95',
     'services.simple': 'Простой сайт',
     'services.simple.price': '$195',
-    'services.cabinet': 'Сайт с личным кабинетом',
+    'services.cabinet': 'Сайт с кабинетом',
     'services.cabinet.price': '$295',
     'services.custom': 'Индивидуальный проект',
-    'why.speed': 'Молниеносная скорость',
-    'why.price': 'Доступные цены',
-    'why.quality': 'Высокое качество',
-    'why.seo': 'SEO-оптимизация',
     'contact.title': 'Свяжитесь с нами',
     'contact.name': 'Имя',
     'contact.email': 'Email',
@@ -59,9 +51,6 @@ const translations: Record<string, Record<string, string>> = {
     'contact.send': 'Отправить',
   },
   en: {
-    'hero.title': 'Website in 24 hours!',
-    'hero.subtitle': 'Laboratory where future websites are born',
-    'hero.cta': 'Order now',
     'nav.home': 'Home',
     'nav.services': 'Services',
     'nav.pricing': 'Pricing',
@@ -69,276 +58,48 @@ const translations: Record<string, Record<string, string>> = {
     'nav.blog': 'Blog',
     'nav.about': 'About',
     'nav.contact': 'Contact',
-    'services.title': 'Our services',
-    'services.landing': 'Landing page',
+    'hero.title': 'Future Website Laboratory',
+    'hero.subtitle': 'Creating ultra-modern web projects in 24 hours',
+    'hero.cta': 'Order Website',
+    'why.speed': 'Lightning Speed',
+    'why.price': 'Fair Pricing',
+    'why.quality': 'High Quality',
+    'why.seo': 'SEO Ready',
+    'services.title': 'Our Services',
+    'services.landing': 'Landing Page',
     'services.landing.price': '$95',
-    'services.simple': 'Simple website',
+    'services.simple': 'Simple Website',
     'services.simple.price': '$195',
-    'services.cabinet': 'Website with user panel',
+    'services.cabinet': 'Website with Dashboard',
     'services.cabinet.price': '$295',
-    'services.custom': 'Custom project',
-    'why.speed': 'Lightning speed',
-    'why.price': 'Affordable prices',
-    'why.quality': 'High quality',
-    'why.seo': 'SEO optimization',
-    'contact.title': 'Contact us',
+    'services.custom': 'Custom Project',
+    'contact.title': 'Contact Us',
     'contact.name': 'Name',
     'contact.email': 'Email',
     'contact.message': 'Message',
     'contact.send': 'Send',
-  },
-  es: {
-    'hero.title': '¡Sitio web en 24 horas!',
-    'hero.subtitle': 'Laboratorio donde nacen los sitios web del futuro',
-    'hero.cta': 'Ordenar ahora',
-    'nav.home': 'Inicio',
-    'nav.services': 'Servicios',
-    'nav.pricing': 'Precios',
-    'nav.cases': 'Casos',
-    'nav.blog': 'Blog',
-    'nav.about': 'Acerca de',
-    'nav.contact': 'Contacto',
-    'services.title': 'Nuestros servicios',
-    'services.landing': 'Página de aterrizaje',
-    'services.landing.price': '$95',
-    'services.simple': 'Sitio web simple',
-    'services.simple.price': '$195',
-    'services.cabinet': 'Sitio web con panel de usuario',
-    'services.cabinet.price': '$295',
-    'services.custom': 'Proyecto personalizado',
-    'why.speed': 'Velocidad relámpago',
-    'why.price': 'Precios accesibles',
-    'why.quality': 'Alta calidad',
-    'why.seo': 'Optimización SEO',
-    'contact.title': 'Contáctanos',
-    'contact.name': 'Nombre',
-    'contact.email': 'Email',
-    'contact.message': 'Mensaje',
-    'contact.send': 'Enviar',
-  },
-  pt: {
-    'hero.title': 'Site em 24 horas!',
-    'hero.subtitle': 'Laboratório onde nascem os sites do futuro',
-    'hero.cta': 'Peça agora',
-    'nav.home': 'Início',
-    'nav.services': 'Serviços',
-    'nav.pricing': 'Preços',
-    'nav.cases': 'Casos',
-    'nav.blog': 'Blog',
-    'nav.about': 'Sobre',
-    'nav.contact': 'Contato',
-    'services.title': 'Nossos serviços',
-    'services.landing': 'Página de destino',
-    'services.landing.price': '$95',
-    'services.simple': 'Site simples',
-    'services.simple.price': '$195',
-    'services.cabinet': 'Site com painel do usuário',
-    'services.cabinet.price': '$295',
-    'services.custom': 'Projeto personalizado',
-    'why.speed': 'Velocidade relâmpago',
-    'why.price': 'Preços acessíveis',
-    'why.quality': 'Alta qualidade',
-    'why.seo': 'Otimização SEO',
-    'contact.title': 'Entre em contato',
-    'contact.name': 'Nome',
-    'contact.email': 'Email',
-    'contact.message': 'Mensagem',
-    'contact.send': 'Enviar',
-  },
-  fr: {
-    'hero.title': 'Site web en 24 heures!',
-    'hero.subtitle': 'Laboratoire où naissent les sites web du futur',
-    'hero.cta': 'Commander maintenant',
-    'nav.home': 'Accueil',
-    'nav.services': 'Services',
-    'nav.pricing': 'Prix',
-    'nav.cases': 'Cas',
-    'nav.blog': 'Blog',
-    'nav.about': 'À propos',
-    'nav.contact': 'Contact',
-    'services.title': 'Nos services',
-    'services.landing': 'Page de destination',
-    'services.landing.price': '$95',
-    'services.simple': 'Site web simple',
-    'services.simple.price': '$195',
-    'services.cabinet': 'Site web avec panneau utilisateur',
-    'services.cabinet.price': '$295',
-    'services.custom': 'Projet personnalisé',
-    'why.speed': 'Vitesse fulgurante',
-    'why.price': 'Prix abordables',
-    'why.quality': 'Haute qualité',
-    'why.seo': 'Optimisation SEO',
-    'contact.title': 'Contactez-nous',
-    'contact.name': 'Nom',
-    'contact.email': 'Email',
-    'contact.message': 'Message',
-    'contact.send': 'Envoyer',
-  },
-  de: {
-    'hero.title': 'Website in 24 Stunden!',
-    'hero.subtitle': 'Labor, wo Zukunfts-Websites geboren werden',
-    'hero.cta': 'Jetzt bestellen',
-    'nav.home': 'Startseite',
-    'nav.services': 'Dienstleistungen',
-    'nav.pricing': 'Preise',
-    'nav.cases': 'Fälle',
-    'nav.blog': 'Blog',
-    'nav.about': 'Über uns',
-    'nav.contact': 'Kontakt',
-    'services.title': 'Unsere Dienstleistungen',
-    'services.landing': 'Landing Page',
-    'services.landing.price': '$95',
-    'services.simple': 'Einfache Website',
-    'services.simple.price': '$195',
-    'services.cabinet': 'Website mit Benutzer-Panel',
-    'services.cabinet.price': '$295',
-    'services.custom': 'Individuelles Projekt',
-    'why.speed': 'Blitzschnelle Geschwindigkeit',
-    'why.price': 'Erschwingliche Preise',
-    'why.quality': 'Hohe Qualität',
-    'why.seo': 'SEO-Optimierung',
-    'contact.title': 'Kontaktieren Sie uns',
-    'contact.name': 'Name',
-    'contact.email': 'Email',
-    'contact.message': 'Nachricht',
-    'contact.send': 'Senden',
-  },
-  it: {
-    'hero.title': 'Sito web in 24 ore!',
-    'hero.subtitle': 'Laboratorio dove nascono i siti web del futuro',
-    'hero.cta': 'Ordina ora',
-    'nav.home': 'Home',
-    'nav.services': 'Servizi',
-    'nav.pricing': 'Prezzi',
-    'nav.cases': 'Casi',
-    'nav.blog': 'Blog',
-    'nav.about': 'Chi siamo',
-    'nav.contact': 'Contatto',
-    'services.title': 'I nostri servizi',
-    'services.landing': 'Pagina di destinazione',
-    'services.landing.price': '$95',
-    'services.simple': 'Sito web semplice',
-    'services.simple.price': '$195',
-    'services.cabinet': 'Sito web con pannello utente',
-    'services.cabinet.price': '$295',
-    'services.custom': 'Progetto personalizzato',
-    'why.speed': 'Velocità fulminea',
-    'why.price': 'Prezzi accessibili',
-    'why.quality': 'Alta qualità',
-    'why.seo': 'Ottimizzazione SEO',
-    'contact.title': 'Contattaci',
-    'contact.name': 'Nome',
-    'contact.email': 'Email',
-    'contact.message': 'Messaggio',
-    'contact.send': 'Invia',
-  },
-  zh: {
-    'hero.title': '24小时内建站！',
-    'hero.subtitle': '未来网站诞生的实验室',
-    'hero.cta': '立即订购',
-    'nav.home': '首页',
-    'nav.services': '服务',
-    'nav.pricing': '价格',
-    'nav.cases': '案例',
-    'nav.blog': '博客',
-    'nav.about': '关于我们',
-    'nav.contact': '联系我们',
-    'services.title': '我们的服务',
-    'services.landing': '着陆页',
-    'services.landing.price': '$95',
-    'services.simple': '简单网站',
-    'services.simple.price': '$195',
-    'services.cabinet': '带用户面板的网站',
-    'services.cabinet.price': '$295',
-    'services.custom': '定制项目',
-    'why.speed': '闪电般的速度',
-    'why.price': '实惠的价格',
-    'why.quality': '高质量',
-    'why.seo': 'SEO优化',
-    'contact.title': '联系我们',
-    'contact.name': '姓名',
-    'contact.email': '邮箱',
-    'contact.message': '消息',
-    'contact.send': '发送',
-  },
-  ja: {
-    'hero.title': '24時間でウェブサイト！',
-    'hero.subtitle': '未来のウェブサイトが生まれる研究所',
-    'hero.cta': '今すぐ注文',
-    'nav.home': 'ホーム',
-    'nav.services': 'サービス',
-    'nav.pricing': '価格',
-    'nav.cases': 'ケース',
-    'nav.blog': 'ブログ',
-    'nav.about': '会社概要',
-    'nav.contact': 'お問い合わせ',
-    'services.title': '私たちのサービス',
-    'services.landing': 'ランディングページ',
-    'services.landing.price': '$95',
-    'services.simple': 'シンプルなウェブサイト',
-    'services.simple.price': '$195',
-    'services.cabinet': 'ユーザーパネル付きウェブサイト',
-    'services.cabinet.price': '$295',
-    'services.custom': 'カスタムプロジェクト',
-    'why.speed': '稲妻のような速度',
-    'why.price': '手頃な価格',
-    'why.quality': '高品質',
-    'why.seo': 'SEO最適化',
-    'contact.title': 'お問い合わせ',
-    'contact.name': '名前',
-    'contact.email': 'メール',
-    'contact.message': 'メッセージ',
-    'contact.send': '送信',
-  },
-  ko: {
-    'hero.title': '24시간 내 웹사이트!',
-    'hero.subtitle': '미래 웹사이트가 탄생하는 연구소',
-    'hero.cta': '지금 주문하기',
-    'nav.home': '홈',
-    'nav.services': '서비스',
-    'nav.pricing': '가격',
-    'nav.cases': '사례',
-    'nav.blog': '블로그',
-    'nav.about': '회사 소개',
-    'nav.contact': '연락처',
-    'services.title': '우리의 서비스',
-    'services.landing': '랜딩 페이지',
-    'services.landing.price': '$95',
-    'services.simple': '간단한 웹사이트',
-    'services.simple.price': '$195',
-    'services.cabinet': '사용자 패널이 있는 웹사이트',
-    'services.cabinet.price': '$295',
-    'services.custom': '맞춤 프로젝트',
-    'why.speed': '번개 같은 속도',
-    'why.price': '합리적인 가격',
-    'why.quality': '고품질',
-    'why.seo': 'SEO 최적화',
-    'contact.title': '문의하기',
-    'contact.name': '이름',
-    'contact.email': '이메일',
-    'contact.message': '메시지',
-    'contact.send': '보내기',
-  },
+  }
 };
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface LanguageContextType {
+  currentLanguage: string;
+  setLanguage: (language: string) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState('ru');
 
-  const setLanguage = (code: string) => {
-    setCurrentLanguage(code);
-    localStorage.setItem('cosmolab-language', code);
+  const setLanguage = (language: string) => {
+    setCurrentLanguage(language);
   };
 
   const t = (key: string): string => {
-    return translations[currentLanguage]?.[key] || translations['en']?.[key] || key;
+    const translation = translations[currentLanguage as keyof typeof translations] || translations.ru;
+    return translation[key as keyof typeof translation] || key;
   };
-
-  React.useEffect(() => {
-    const savedLanguage = localStorage.getItem('cosmolab-language');
-    if (savedLanguage && translations[savedLanguage]) {
-      setCurrentLanguage(savedLanguage);
-    }
-  }, []);
 
   return (
     <LanguageContext.Provider value={{ currentLanguage, setLanguage, t }}>
@@ -349,7 +110,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
