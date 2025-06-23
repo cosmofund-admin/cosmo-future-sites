@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,25 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// CosmoLab brand colors
+				cosmic: {
+					50: '#0f0f23',
+					100: '#1a1a3a',
+					200: '#252547',
+					300: '#303054',
+					400: '#3b3b61',
+					500: '#46466e',
+					600: '#51517b',
+					700: '#5c5c88',
+					800: '#676795',
+					900: '#7272a2'
+				},
+				neon: {
+					blue: '#00ffff',
+					purple: '#8b5cf6',
+					pink: '#f472b6',
+					green: '#10b981'
 				}
 			},
 			borderRadius: {
@@ -84,11 +104,47 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-neon': {
+					'0%, 100%': {
+						opacity: '1',
+						transform: 'scale(1)',
+					},
+					'50%': {
+						opacity: '0.8',
+						transform: 'scale(1.05)',
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-20px)'
+					}
+				},
+				'glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 40px rgba(0, 255, 255, 0.8), 0 0 60px rgba(139, 92, 246, 0.3)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'glow': 'glow 3s ease-in-out infinite'
+			},
+			fontFamily: {
+				inter: ['Inter', 'sans-serif']
+			},
+			backgroundImage: {
+				'cosmic-gradient': 'linear-gradient(135deg, #0f0f23 0%, #1a1a3a 25%, #252547 50%, #303054 75%, #3b3b61 100%)',
+				'neon-gradient': 'linear-gradient(135deg, #00ffff 0%, #8b5cf6 50%, #f472b6 100%)'
 			}
 		}
 	},
