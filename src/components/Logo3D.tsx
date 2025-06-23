@@ -3,10 +3,11 @@ import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text, Box, Sphere } from '@react-three/drei';
 import { motion } from 'framer-motion';
+import * as THREE from 'three';
 
 const LogoMesh: React.FC = () => {
-  const meshRef = useRef<any>();
-  const sphereRef = useRef<any>();
+  const meshRef = useRef<THREE.Group>(null);
+  const sphereRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -26,7 +27,7 @@ const LogoMesh: React.FC = () => {
           color="#00ffff"
           emissive="#8b5cf6"
           emissiveIntensity={0.3}
-          transparent
+          transparent={true}
           opacity={0.8}
         />
       </Box>
@@ -35,9 +36,9 @@ const LogoMesh: React.FC = () => {
           color="#f472b6"
           emissive="#00ffff"
           emissiveIntensity={0.2}
-          transparent
+          transparent={true}
           opacity={0.6}
-          wireframe
+          wireframe={true}
         />
       </Sphere>
       <Text
@@ -46,7 +47,6 @@ const LogoMesh: React.FC = () => {
         color="#ffffff"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/inter-bold.woff"
       >
         CosmoLab
       </Text>
