@@ -1,34 +1,20 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useToast } from '../hooks/use-toast';
+import { Send, Phone, Mail, MapPin, Clock } from 'lucide-react';
 
 const ContactSection: React.FC = () => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: '',
-    budget: ''
+    phone: '',
+    service: '',
+    message: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Заявка отправлена!",
-        description: "Мы свяжемся с вами в течение 24 часов.",
-      });
-      setFormData({ name: '', email: '', message: '', budget: '' });
-      setIsLoading(false);
-    }, 1000);
+    console.log('Form submitted:', formData);
+    // Here you would typically send the data to your backend
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -39,193 +25,178 @@ const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold cosmic-text mb-6">
-            {t('contact.title')}
+    <section className="section-padding bg-gray-50">
+      <div className="container-custom">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            Готовы создать <span className="gradient-text">ваш проект</span>?
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Готовы создать сайт мечты? Свяжитесь с нами прямо сейчас!
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Свяжитесь с нами сегодня и получите персональную консультацию по вашему проекту
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Contact Info */}
+          <div className="space-y-8">
+            <div className="glass rounded-2xl p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Контактная информация</h3>
+              
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Телефон</p>
+                    <p className="text-gray-600">+7 (999) 123-45-67</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Email</p>
+                    <p className="text-gray-600">hello@cosmolab.dev</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Адрес</p>
+                    <p className="text-gray-600">Москва, Россия</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Режим работы</p>
+                    <p className="text-gray-600">Пн-Пт: 9:00 - 19:00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+              <h4 className="text-xl font-bold mb-4">Быстрый старт</h4>
+              <p className="mb-4">Получите консультацию и техническое задание бесплатно</p>
+              <div className="flex items-center space-x-2 text-blue-100">
+                <Clock className="w-5 h-5" />
+                <span>Ответим в течение 30 минут</span>
+              </div>
+            </div>
+          </div>
+
           {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="glass-morphism p-8 rounded-xl border border-cosmic-300/30"
-          >
-            <h3 className="text-2xl font-bold text-white mb-6">Оставьте заявку</h3>
-            
+          <div className="glass rounded-2xl p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('contact.name')}
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-cosmic-200/50 border border-cosmic-300/50 text-white placeholder-gray-400 focus:border-neon-blue focus:outline-none transition-colors"
-                  placeholder="Ваше имя"
-                />
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">
+                    Ваше имя *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
+                    placeholder="Иван Иванов"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-2">
+                    Телефон *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
+                    placeholder="+7 (999) 123-45-67"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('contact.email')}
+                <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
+                  Email *
                 </label>
                 <input
                   type="email"
                   id="email"
                   name="email"
+                  required
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-cosmic-200/50 border border-cosmic-300/50 text-white placeholder-gray-400 focus:border-neon-blue focus:outline-none transition-colors"
-                  placeholder="your@email.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
+                  placeholder="ivan@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="budget" className="block text-sm font-medium text-gray-300 mb-2">
-                  Бюджет проекта
+                <label htmlFor="service" className="block text-sm font-medium text-gray-900 mb-2">
+                  Интересующая услуга
                 </label>
                 <select
-                  id="budget"
-                  name="budget"
-                  value={formData.budget}
+                  id="service"
+                  name="service"
+                  value={formData.service}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-cosmic-200/50 border border-cosmic-300/50 text-white focus:border-neon-blue focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                 >
-                  <option value="">Выберите бюджет</option>
-                  <option value="95">$95 - Лендинг</option>
-                  <option value="195">$195 - Простой сайт</option>
-                  <option value="295">$295 - Сайт с кабинетом</option>
-                  <option value="custom">Индивидуальный проект</option>
+                  <option value="">Выберите услугу</option>
+                  <option value="landing">Лендинг-страница</option>
+                  <option value="corporate">Корпоративный сайт</option>
+                  <option value="ecommerce">Интернет-магазин</option>
+                  <option value="web-app">Веб-приложение</option>
+                  <option value="redesign">Редизайн</option>
                 </select>
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('contact.message')}
+                <label htmlFor="message" className="block text-sm font-medium text-gray-900 mb-2">
+                  Сообщение *
                 </label>
                 <textarea
                   id="message"
                   name="message"
+                  required
+                  rows={4}
                   value={formData.message}
                   onChange={handleChange}
-                  rows={4}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-cosmic-200/50 border border-cosmic-300/50 text-white placeholder-gray-400 focus:border-neon-blue focus:outline-none transition-colors resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200 resize-none"
                   placeholder="Расскажите о вашем проекте..."
                 />
               </div>
 
-              <motion.button
+              <button
                 type="submit"
-                disabled={isLoading}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full bg-gradient-to-r from-neon-blue to-neon-purple px-8 py-4 rounded-lg text-white font-semibold flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full btn-premium flex items-center justify-center space-x-2"
               >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <span>{t('contact.send')}</span>
-                    <Send className="w-5 h-5" />
-                  </>
-                )}
-              </motion.button>
+                <Send className="w-5 h-5" />
+                <span>Отправить заявку</span>
+              </button>
+
+              <p className="text-sm text-gray-500 text-center">
+                Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
+              </p>
             </form>
-          </motion.div>
-
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
-          >
-            <div className="glass-morphism p-6 rounded-xl border border-cosmic-300/30">
-              <h3 className="text-xl font-bold text-white mb-6">Контактная информация</h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-neon-blue to-cyan-400 flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Email</p>
-                    <p className="text-white font-medium">info@cosmolab.space</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-neon-purple to-violet-400 flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Телефон</p>
-                    <p className="text-white font-medium">+7 (999) 123-45-67</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-neon-pink to-rose-400 flex items-center justify-center">
-                    <MessageCircle className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Мессенджеры</p>
-                    <p className="text-white font-medium">WhatsApp / Telegram</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass-morphism p-6 rounded-xl border border-cosmic-300/30">
-              <h3 className="text-xl font-bold text-white mb-4">Время работы</h3>
-              <div className="space-y-2 text-gray-300">
-                <p>Пн-Пт: 10:00 - 20:00</p>
-                <p>Сб-Вс: 12:00 - 18:00</p>
-                <p className="text-neon-blue">Экстренная поддержка: 24/7</p>
-              </div>
-            </div>
-
-            <div className="glass-morphism p-6 rounded-xl border border-cosmic-300/30">
-              <h3 className="text-xl font-bold text-white mb-4">Способы оплаты</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 rounded-lg bg-cosmic-300/20">
-                  <p className="text-white font-medium">Stripe</p>
-                  <p className="text-gray-400 text-sm">Карты</p>
-                </div>
-                <div className="text-center p-3 rounded-lg bg-cosmic-300/20">
-                  <p className="text-white font-medium">PayPal</p>
-                  <p className="text-gray-400 text-sm">Безопасно</p>
-                </div>
-                <div className="text-center p-3 rounded-lg bg-cosmic-300/20">
-                  <p className="text-white font-medium">Crypto</p>
-                  <p className="text-gray-400 text-sm">Bitcoin</p>
-                </div>
-                <div className="text-center p-3 rounded-lg bg-cosmic-300/20">
-                  <p className="text-white font-medium">COSMO</p>
-                  <p className="text-gray-400 text-sm">-10%</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
