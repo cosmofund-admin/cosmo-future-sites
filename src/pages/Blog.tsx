@@ -3,95 +3,23 @@ import React, { useState } from 'react';
 import { Calendar, User, Search, ArrowRight } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useLanguage } from '../contexts/LanguageContext';
+import { searchArticles } from '../utils/articleGenerator';
 
 const Blog: React.FC = () => {
+  const { t, currentLanguage } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Все');
+  const [selectedCategory, setSelectedCategory] = useState(t('blog.category.all'));
 
-  const categories = ['Все', 'SEO', 'Дизайн', 'Производительность', 'React', 'JavaScript', 'Маркетинг'];
-  
-  const articles = [
-    {
-      id: 1,
-      title: 'SEO-оптимизация в 2024: Полное руководство для начинающих',
-      excerpt: 'Узнайте, как правильно оптимизировать сайт для поисковых систем. Ключевые слова, мета-теги, структура, внутренняя перелинковка и технические аспекты SEO.',
-      content: 'Подробное руководство по SEO-оптимизации сайтов...',
-      author: 'Михаил Петров',
-      date: '20 января 2024',
-      category: 'SEO',
-      readTime: '12 мин',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500',
-      tags: ['SEO', 'поисковая оптимизация', 'Google', 'Яндекс']
-    },
-    {
-      id: 2,
-      title: 'Как увеличить скорость загрузки сайта: 15 проверенных способов',
-      excerpt: 'Оптимизация изображений, минификация CSS/JS, использование CDN, lazy loading и другие методы ускорения сайта для лучшего SEO.',
-      content: 'Подробная статья об оптимизации скорости...',
-      author: 'Елена Волкова',
-      date: '18 января 2024',
-      category: 'Производительность',
-      readTime: '10 мин',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-      tags: ['производительность', 'оптимизация', 'PageSpeed', 'Core Web Vitals']
-    },
-    {
-      id: 3,
-      title: 'Семантическая верстка и микроразметка для SEO',
-      excerpt: 'Правильная HTML5 семантика, Schema.org разметка, Open Graph и Twitter Cards для улучшения видимости в поисковых системах.',
-      content: 'Статья о семантической верстке...',
-      author: 'Анна Смирнова',
-      date: '15 января 2024',
-      category: 'SEO',
-      readTime: '8 мин',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500',
-      tags: ['HTML5', 'семантика', 'микроразметка', 'Schema.org']
-    },
-    {
-      id: 4,
-      title: 'Локальное SEO: Как продвинуть бизнес в своем городе',
-      excerpt: 'Google My Business, локальные ключевые слова, отзывы клиентов и NAP-данные для продвижения местного бизнеса.',
-      content: 'Руководство по локальному SEO...',
-      author: 'Дмитрий Козлов',
-      date: '12 января 2024',
-      category: 'SEO',
-      readTime: '9 мин',
-      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500',
-      tags: ['локальное SEO', 'Google My Business', 'NAP', 'местный бизнес']
-    },
-    {
-      id: 5,
-      title: 'Тренды веб-дизайна 2024: Что будет актуально',
-      excerpt: 'Нейроморфизм, темные темы, анимации, градиенты и другие тренды дизайна, которые будут популярны в 2024 году.',
-      content: 'Обзор трендов веб-дизайна...',
-      author: 'Анна Смирнова',
-      date: '10 января 2024',
-      category: 'Дизайн',
-      readTime: '7 мин',
-      image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500',
-      tags: ['дизайн', 'тренды', 'UI/UX', '2024']
-    },
-    {
-      id: 6,
-      title: 'Core Web Vitals: Как улучшить показатели сайта',
-      excerpt: 'LCP, FID, CLS - разбираем основные метрики Google для оценки пользовательского опыта и их влияние на ранжирование.',
-      content: 'Подробный гайд по Core Web Vitals...',
-      author: 'Елена Волкова',
-      date: '8 января 2024',
-      category: 'SEO',
-      readTime: '11 мин',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500',
-      tags: ['Core Web Vitals', 'UX', 'Google', 'производительность']
-    }
+  const categories = [
+    t('blog.category.all'),
+    t('blog.category.seo'),
+    t('blog.category.design'),
+    t('blog.category.development'),
+    t('blog.category.marketing')
   ];
 
-  const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === 'Все' || article.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredArticles = searchArticles(searchTerm, selectedCategory, currentLanguage);
 
   return (
     <div className="min-h-screen bg-white">
@@ -101,21 +29,20 @@ const Blog: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              SEO Блог CosmoLab
+              {t('blog.title')} CosmoLab
             </h1>
             <p className="text-xl text-gray-600">
-              Экспертные статьи о SEO, веб-разработке и digital-маркетинге
+              {t('blog.subtitle')}
             </p>
           </div>
 
-          {/* Search and Filters */}
           <div className="bg-white p-6 rounded-lg shadow-sm mb-12">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Поиск статей по SEO, дизайну, производительности..."
+                  placeholder={t('blog.search')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -190,7 +117,7 @@ const Blog: React.FC = () => {
                 </div>
 
                 <button className="mt-4 flex items-center text-blue-600 hover:text-blue-700 transition-colors">
-                  Читать полностью
+                  {t('blog.read')}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
               </div>

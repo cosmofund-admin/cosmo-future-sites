@@ -1,190 +1,135 @@
 
 import React from 'react';
-import { Globe, Layers, Users, Sparkles, ArrowRight, Check } from 'lucide-react';
+import { Check, Zap, Shield, Award, Code, Palette, Search, Smartphone } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const ServicesSection: React.FC = () => {
+  const { t, getCurrentCurrency } = useLanguage();
+  const { symbol } = getCurrentCurrency();
+
   const services = [
     {
-      icon: Globe,
-      title: 'Лендинг страница',
-      price: 'от 15 000₽',
+      name: t('services.landing'),
+      price: t('services.landing.price'),
+      description: 'Эффективная страница для конверсии посетителей в клиентов',
       features: [
         'Адаптивный дизайн',
         'SEO-оптимизация',
-        'Домен в подарок',
-        'Поддержка 30 дней',
-        'Аналитика Google',
-        'Форма обратной связи'
+        'Форма обратной связи',
+        'Интеграция с CRM',
+        'Аналитика',
+        '30 дней поддержки'
       ],
       popular: false,
-      gradient: 'from-blue-500 to-cyan-500',
-      deliveryTime: '1-3 дня'
+      icon: <Zap className="w-8 h-8" />
     },
     {
-      icon: Layers,
-      title: 'Корпоративный сайт',
-      price: 'от 45 000₽',
+      name: t('services.simple'),
+      price: t('services.simple.price'),
+      description: 'Многостраничный сайт для представления вашего бизнеса',
       features: [
-        'До 10 страниц',
-        'CMS система',
-        'Аналитика и метрики',
-        'Поддержка 60 дней',
-        'SEO-продвижение',
-        'Интеграция с соцсетями'
+        'До 5 страниц',
+        'Панель администратора',
+        'Блог система',
+        'Галерея работ',
+        'Контактные формы',
+        'SSL сертификат',
+        '60 дней поддержки'
       ],
       popular: true,
-      gradient: 'from-purple-500 to-pink-500',
-      deliveryTime: '3-7 дней'
+      icon: <Code className="w-8 h-8" />
     },
     {
-      icon: Users,
-      title: 'Интернет-магазин',
-      price: 'от 85 000₽',
+      name: t('services.cabinet'),
+      price: t('services.cabinet.price'),
+      description: 'Сайт с личным кабинетом и расширенным функционалом',
       features: [
-        'Личный кабинет',
-        'Система оплаты',
-        'База данных товаров',
-        'Поддержка 90 дней',
-        'Админ панель',
-        'Интеграция с 1С'
-      ],
-      popular: false,
-      gradient: 'from-green-500 to-emerald-500',
-      deliveryTime: '7-14 дней'
-    },
-    {
-      icon: Sparkles,
-      title: 'Индивидуальная разработка',
-      price: 'Договорная',
-      features: [
-        'Уникальный дизайн',
-        'Сложная логика',
+        'Личный кабинет пользователей',
+        'Система авторизации',
+        'База данных',
         'API интеграции',
-        'Полное сопровождение',
-        'Масштабируемость',
-        'Техподдержка 24/7'
+        'Уведомления',
+        'Резервное копирование',
+        '90 дней поддержки'
       ],
       popular: false,
-      gradient: 'from-orange-500 to-red-500',
-      deliveryTime: '14-30 дней'
+      icon: <Shield className="w-8 h-8" />
     }
   ];
 
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    if (element) {
-      const headerHeight = 80;
-      const elementPosition = element.offsetTop - headerHeight;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
+  const technologies = [
+    { name: 'React', icon: <Code className="w-6 h-6" /> },
+    { name: 'TypeScript', icon: <Code className="w-6 h-6" /> },
+    { name: 'Tailwind CSS', icon: <Palette className="w-6 h-6" /> },
+    { name: 'SEO Ready', icon: <Search className="w-6 h-6" /> },
+    { name: 'Mobile First', icon: <Smartphone className="w-6 h-6" /> },
+    { name: 'Performance', icon: <Zap className="w-6 h-6" /> }
+  ];
 
   return (
-    <section id="services" className="section-padding bg-white">
+    <section id="services" className="section-padding bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container-custom">
-        <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-6">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span className="text-sm font-medium text-blue-700">Наши услуги</span>
-          </div>
-          
-          <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-            Выберите свой
-            <span className="block gradient-text">идеальный пакет</span>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            {t('services.title').split(' ')[0]} <span className="gradient-text">{t('services.title').split(' ').slice(1).join(' ')}</span>
           </h2>
-          
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            От простых лендингов до сложных веб-приложений — мы создаем сайты для любых задач и бюджетов
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+            Профессиональная разработка сайтов с использованием современных технологий
           </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <div
-                key={index}
-                className={`relative group bg-white rounded-2xl border-2 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                  service.popular 
-                    ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
-                    : 'border-gray-200 hover:border-blue-300'
-                } animate-fade-in`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {service.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
-                      Хит продаж
-                    </div>
-                  </div>
-                )}
-
-                <div className="p-8">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {service.title}
-                  </h3>
-
-                  <div className="mb-6">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      {service.price}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Срок: {service.deliveryTime}
-                    </div>
-                  </div>
-
-                  <ul className="space-y-3 mb-8">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-gray-600">
-                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    onClick={scrollToContact}
-                    className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
-                      service.popular
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'
-                        : 'border-2 border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50'
-                    }`}
-                  >
-                    <span>Заказать</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Technologies Section */}
-        <div className="mt-20 text-center animate-fade-in">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8">
-            Технологии мирового уровня
-          </h3>
           
-          <div className="flex flex-wrap justify-center gap-6">
-            {['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Vercel', 'Figma'].map((tech, index) => (
-              <div
-                key={tech}
-                className="group bg-white border-2 border-gray-200 hover:border-blue-300 px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <span className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors duration-200">
-                  {tech}
-                </span>
+          {/* Технологии */}
+          <div className="flex flex-wrap justify-center gap-4 mb-16">
+            {technologies.map((tech) => (
+              <div key={tech.name} className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-200/50">
+                <div className="text-blue-600">{tech.icon}</div>
+                <span className="text-sm font-medium text-gray-700">{tech.name}</span>
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {services.map((service, index) => (
+            <div key={index} className={`relative glass rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${service.popular ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}`}>
+              {service.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+                    <Award className="w-4 h-4" />
+                    <span>Хит продаж</span>
+                  </div>
+                </div>
+              )}
+              
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl mb-4">
+                  {service.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
+                <p className="text-gray-600 text-sm mb-6">{service.description}</p>
+                <div className="text-4xl font-bold text-gray-900 mb-2">
+                  {symbol}{service.price}
+                </div>
+                <p className="text-gray-500 text-sm">за проект</p>
+              </div>
+
+              <ul className="space-y-3 mb-8">
+                {service.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center space-x-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                service.popular 
+                  ? 'btn-premium' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}>
+                Заказать сейчас
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </section>

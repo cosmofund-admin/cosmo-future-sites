@@ -2,50 +2,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowRight, Clock } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { generateArticles } from '../utils/articleGenerator';
 
 const BlogSection: React.FC = () => {
-  const posts = [
-    {
-      id: 1,
-      title: 'Топ-10 трендов веб-дизайна 2024',
-      excerpt: 'Изучаем самые актуальные тенденции в современном веб-дизайне и их влияние на пользовательский опыт.',
-      author: 'Анна Смирнова',
-      date: '15 декабря 2024',
-      readTime: '8 мин',
-      image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop',
-      category: 'Дизайн'
-    },
-    {
-      id: 2,
-      title: 'React vs Vue: Что выбрать в 2024?',
-      excerpt: 'Подробное сравнение популярных JavaScript фреймворков для разработки современных веб-приложений.',
-      author: 'Максим Петров',
-      date: '12 декабря 2024',
-      readTime: '12 мин',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop',
-      category: 'Разработка'
-    },
-    {
-      id: 3,
-      title: 'SEO оптимизация: Полное руководство',
-      excerpt: 'Комплексный подход к поисковой оптимизации сайтов. Техники и стратегии для топовых позиций.',
-      author: 'Елена Козлова',
-      date: '10 декабря 2024',
-      readTime: '15 мин',
-      image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&h=300&fit=crop',
-      category: 'SEO'
-    }
-  ];
+  const { t, currentLanguage } = useLanguage();
+  const posts = generateArticles(currentLanguage).slice(0, 3); // Показываем первые 3 статьи
 
   return (
     <section id="blog" className="section-padding bg-white">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Полезные <span className="gradient-text">статьи</span>
+            {t('blog.title').split(' ')[0]} <span className="gradient-text">{t('blog.title').split(' ').slice(1).join(' ')}</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Экспертные материалы о веб-разработке, дизайне и цифровом маркетинге
+            {t('blog.subtitle')}
           </p>
         </div>
 
@@ -94,7 +66,7 @@ const BlogSection: React.FC = () => {
                     to={`/blog/${post.id}`}
                     className="inline-flex items-center space-x-2 text-blue-600 font-semibold hover:text-purple-600 transition-colors"
                   >
-                    <span>Читать далее</span>
+                    <span>{t('blog.read')}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -108,7 +80,7 @@ const BlogSection: React.FC = () => {
             to="/blog"
             className="btn-premium inline-flex items-center space-x-2"
           >
-            <span>Все статьи</span>
+            <span>{t('blog.all')}</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
