@@ -1,174 +1,191 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Globe, Layers, Users, Sparkles, ArrowRight } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Globe, Layers, Users, Sparkles, ArrowRight, Check } from 'lucide-react';
 
 const ServicesSection: React.FC = () => {
-  const { t } = useLanguage();
-
   const services = [
     {
       icon: Globe,
-      titleKey: 'services.landing',
-      priceKey: 'services.landing.price',
+      title: 'Лендинг страница',
+      price: 'от 15 000₽',
       features: [
         'Адаптивный дизайн',
         'SEO-оптимизация',
         'Домен в подарок',
-        'Поддержка 30 дней'
+        'Поддержка 30 дней',
+        'Аналитика Google',
+        'Форма обратной связи'
       ],
       popular: false,
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500',
+      deliveryTime: '1-3 дня'
     },
     {
       icon: Layers,
-      titleKey: 'services.simple',
-      priceKey: 'services.simple.price',
+      title: 'Корпоративный сайт',
+      price: 'от 45 000₽',
       features: [
         'До 10 страниц',
         'CMS система',
-        'Аналитика',
-        'Поддержка 60 дней'
+        'Аналитика и метрики',
+        'Поддержка 60 дней',
+        'SEO-продвижение',
+        'Интеграция с соцсетями'
       ],
       popular: true,
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-purple-500 to-pink-500',
+      deliveryTime: '3-7 дней'
     },
     {
       icon: Users,
-      titleKey: 'services.cabinet',
-      priceKey: 'services.cabinet.price',
+      title: 'Интернет-магазин',
+      price: 'от 85 000₽',
       features: [
         'Личный кабинет',
-        'Авторизация',
-        'База данных',
-        'Поддержка 90 дней'
+        'Система оплаты',
+        'База данных товаров',
+        'Поддержка 90 дней',
+        'Админ панель',
+        'Интеграция с 1С'
       ],
       popular: false,
-      gradient: 'from-green-500 to-emerald-500'
+      gradient: 'from-green-500 to-emerald-500',
+      deliveryTime: '7-14 дней'
     },
     {
       icon: Sparkles,
-      titleKey: 'services.custom',
-      priceKey: 'Договорная',
+      title: 'Индивидуальная разработка',
+      price: 'Договорная',
       features: [
-        'Индивидуальный дизайн',
+        'Уникальный дизайн',
         'Сложная логика',
-        'Интеграции',
-        'Полное сопровождение'
+        'API интеграции',
+        'Полное сопровождение',
+        'Масштабируемость',
+        'Техподдержка 24/7'
       ],
       popular: false,
-      gradient: 'from-orange-500 to-red-500'
+      gradient: 'from-orange-500 to-red-500',
+      deliveryTime: '14-30 дней'
     }
   ];
 
+  const scrollToContact = () => {
+    const element = document.getElementById('contact');
+    if (element) {
+      const headerHeight = 80;
+      const elementPosition = element.offsetTop - headerHeight;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <section id="services" className="py-20 relative overflow-hidden">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold cosmic-text mb-6">
-            {t('services.title')}
+    <section id="services" className="section-padding bg-white">
+      <div className="container-custom">
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-6">
+            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+            <span className="text-sm font-medium text-blue-700">Наши услуги</span>
+          </div>
+          
+          <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
+            Выберите свой
+            <span className="block gradient-text">идеальный пакет</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            От простых лендингов до сложных веб-приложений — мы создаем сайты для любых задач
+          
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            От простых лендингов до сложных веб-приложений — мы создаем сайты для любых задач и бюджетов
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.titleKey}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="relative group"
-            >
-              {service.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <span className="bg-gradient-to-r from-neon-blue to-neon-purple px-4 py-1 rounded-full text-sm font-bold text-white">
-                    Популярный
-                  </span>
+          {services.map((service, index) => {
+            const Icon = service.icon;
+            return (
+              <div
+                key={index}
+                className={`relative group bg-white rounded-2xl border-2 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
+                  service.popular 
+                    ? 'border-blue-500 shadow-lg shadow-blue-500/20' 
+                    : 'border-gray-200 hover:border-blue-300'
+                } animate-fade-in`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {service.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                      Хит продаж
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-8">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {service.title}
+                  </h3>
+
+                  <div className="mb-6">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      {service.price}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Срок: {service.deliveryTime}
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3 mb-8">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center text-gray-600">
+                        <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    onClick={scrollToContact}
+                    className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      service.popular
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'
+                        : 'border-2 border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    <span>Заказать</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-              )}
-
-              <div className={`glass-morphism rounded-xl p-6 h-full border-2 transition-all duration-300 ${
-                service.popular 
-                  ? 'border-neon-blue/50 shadow-lg shadow-neon-blue/20' 
-                  : 'border-cosmic-300/30 hover:border-neon-purple/50'
-              }`}>
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className={`w-16 h-16 rounded-xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-6 mx-auto`}
-                >
-                  <service.icon className="w-8 h-8 text-white" />
-                </motion.div>
-
-                <h3 className="text-xl font-bold text-white mb-2 text-center">
-                  {t(service.titleKey)}
-                </h3>
-
-                <div className="text-center mb-6">
-                  <span className="text-3xl font-bold cosmic-text">
-                    {service.priceKey === 'Договорная' ? service.priceKey : t(service.priceKey)}
-                  </span>
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-neon-blue mr-3"></div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
-                    service.popular
-                      ? 'bg-gradient-to-r from-neon-blue to-neon-purple text-white'
-                      : 'neon-border text-white hover:bg-cosmic-300/20'
-                  }`}
-                >
-                  <span>Заказать</span>
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
               </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Technologies Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-20 text-center"
-        >
-          <h3 className="text-2xl font-bold cosmic-text mb-8">Технологии которые мы используем</h3>
+        <div className="mt-20 text-center animate-fade-in">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">
+            Технологии мирового уровня
+          </h3>
           
           <div className="flex flex-wrap justify-center gap-6">
-            {['React', 'Next.js', 'Three.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Supabase', 'Vercel'].map((tech, index) => (
-              <motion.div
+            {['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Vercel', 'Figma'].map((tech, index) => (
+              <div
                 key={tech}
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-                className="glass-morphism px-6 py-3 rounded-full border border-neon-blue/30 hover:border-neon-blue/60 transition-all duration-300"
+                className="group bg-white border-2 border-gray-200 hover:border-blue-300 px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <span className="text-white font-medium">{tech}</span>
-              </motion.div>
+                <span className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors duration-200">
+                  {tech}
+                </span>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
