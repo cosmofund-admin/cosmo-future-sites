@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Edit, Trash, Users, FileText, Briefcase, Settings, Search, Filter } from 'lucide-react';
+import { Plus, Edit, Trash, Users, FileText, Briefcase, Settings, Search, LogOut } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { generateArticles, searchArticles } from '../utils/articleGenerator';
+import { searchArticles, getTotalArticlesCount, type Article } from '../utils/supabaseQueries';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('articles');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [selectedLanguage, setSelectedLanguage] = useState('ru');
-  const { t, currentLanguage } = useLanguage();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
+  const { signOut, profile } = useAuth();
 
   const categories = ['Все', 'SEO', 'Дизайн', 'Разработка', 'Маркетинг', 'Производительность'];
   const languages = ['ru', 'en', 'es', 'pt', 'fr', 'de', 'it', 'ja', 'ko', 'zh'];
   
-  const articles = searchArticles(searchTerm, selectedCategory, selectedLanguage).slice(0, 20);
-
   const cases = [
     { id: 1, title: 'Интернет-магазин одежды', client: 'Fashion Store', status: 'Завершен' },
     { id: 2, title: 'Корпоративный сайт', client: 'IT Company', status: 'В работе' }
@@ -26,13 +29,48 @@ const AdminPanel: React.FC = () => {
     { id: 2, name: 'Анна Смирнова', email: 'anna@email.com', role: 'Админ' }
   ];
 
+  useEffect(() => {
+    if (activeTab === 'articles') {
+      fetchArticles();
+      fetchTotalCount();
+    }
+  }, [searchTerm, selectedCategory, selectedLanguage, activeTab]);
+
+  const fetchArticles = async () => {
+    setLoading(true);
+    const result = await searchArticles(searchTerm, selectedCategory, selectedLanguage, 20);
+    setArticles(result);
+    setLoading(false);
+  };
+
+  const fetchTotalCount = async () => {
+    const count = await getTotalArticlesCount(selectedLanguage);
+    setTotalCount(count);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <Link to="/" className="text-2xl font-bold text-blue-600">CosmoLab Admin</Link>
-            <Link to="/dashboard" className="text-gray-600 hover:text-blue-600">Личный кабинет</Link>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Админ: {profile?.wallet_address?.slice(0, 6)}...{profile?.wallet_address?.slice(-4)}
+              </span>
+              <Link to="/dashboard" className="text-gray-600 hover:text-blue-600">Личный кабинет</Link>
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center text-gray-600 hover:text-blue-600"
+              >
+                <LogOut className="w-4 h-4 mr-1" />
+                Выйти
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -48,7 +86,7 @@ const AdminPanel: React.FC = () => {
                 className={`px-6 py-3 font-medium ${activeTab === 'articles' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
               >
                 <FileText className="w-5 h-5 inline mr-2" />
-                Статьи блога ({generateArticles(selectedLanguage).length})
+                Статьи блога ({totalCount.toLocaleString()})
               </button>
               <button
                 onClick={() => setActiveTab('cases')}
@@ -85,7 +123,6 @@ const AdminPanel: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Фильтры для статей */}
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="relative">
@@ -123,57 +160,76 @@ const AdminPanel: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-4 py-3 text-left">ID</th>
-                        <th className="px-4 py-3 text-left">Название</th>
-                        <th className="px-4 py-3 text-left">Категория</th>
-                        <th className="px-4 py-3 text-left">Автор</th>
-                        <th className="px-4 py-3 text-left">Язык</th>
-                        <th className="px-4 py-3 text-left">Дата</th>
-                        <th className="px-4 py-3 text-left">Действия</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {articles.map((article) => (
-                        <tr key={article.id} className="border-t hover:bg-gray-50">
-                          <td className="px-4 py-3 font-mono text-sm">{article.id}</td>
-                          <td className="px-4 py-3 max-w-xs truncate" title={article.title}>
-                            {article.title}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                              {article.category}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">{article.author}</td>
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 rounded bg-gray-100 text-xs font-mono">
-                              {article.language.toUpperCase()}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-500">{article.date}</td>
-                          <td className="px-4 py-3">
-                            <div className="flex space-x-2">
-                              <button className="text-blue-600 hover:text-blue-800 transition-colors">
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button className="text-red-600 hover:text-red-800 transition-colors">
-                                <Trash className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                
-                <div className="mt-4 text-sm text-gray-500 text-center">
-                  Показано {articles.length} из {generateArticles(selectedLanguage).length} статей
-                </div>
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left">ID</th>
+                            <th className="px-4 py-3 text-left">Название</th>
+                            <th className="px-4 py-3 text-left">Категория</th>
+                            <th className="px-4 py-3 text-left">Автор</th>
+                            <th className="px-4 py-3 text-left">Язык</th>
+                            <th className="px-4 py-3 text-left">Дата</th>
+                            <th className="px-4 py-3 text-left">Действия</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {articles.map((article) => (
+                            <tr key={article.id} className="border-t hover:bg-gray-50">
+                              <td className="px-4 py-3 font-mono text-sm">{article.id}</td>
+                              <td className="px-4 py-3 max-w-xs truncate" title={article.title}>
+                                {article.title}
+                              </td>
+                              <td className="px-4 py-3">
+                                <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                                  {article.category}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">{article.author}</td>
+                              <td className="px-4 py-3">
+                                <span className="px-2 py-1 rounded bg-gray-100 text-xs font-mono">
+                                  {article.language.toUpperCase()}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-sm text-gray-500">
+                                {new Date(article.date).toLocaleDateString()}
+                              </td>
+                              <td className="px-4 py-3">
+                                <div className="flex space-x-2">
+                                  <Link 
+                                    to={`/blog/${article.id}`}
+                                    className="text-green-600 hover:text-green-800 transition-colors"
+                                    target="_blank"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                  </Link>
+                                  <button className="text-blue-600 hover:text-blue-800 transition-colors">
+                                    <Edit className="w-4 h-4" />
+                                  </button>
+                                  <button className="text-red-600 hover:text-red-800 transition-colors">
+                                    <Trash className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    <div className="mt-4 text-sm text-gray-500 text-center">
+                      Показано {articles.length} из {totalCount.toLocaleString()} статей на языке {selectedLanguage.toUpperCase()}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 

@@ -1,18 +1,76 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Tag } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useLanguage } from '../contexts/LanguageContext';
-import { getArticleById } from '../utils/articleGenerator';
+import { getArticleById, type Article } from '../utils/supabaseQueries';
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { t, currentLanguage } = useLanguage();
-  const article = getArticleById(parseInt(id || '1'), currentLanguage);
+  const { t } = useLanguage();
+  const [article, setArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!article) {
+  useEffect(() => {
+    const fetchArticle = async () => {
+      if (!id) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
+      const articleData = await getArticleById(parseInt(id));
+      
+      if (articleData) {
+        setArticle(articleData);
+        
+        // Обновляем мета-теги для SEO
+        if (articleData.meta_title) {
+          document.title = articleData.meta_title;
+        }
+        
+        if (articleData.meta_description) {
+          const metaDescription = document.querySelector('meta[name="description"]');
+          if (metaDescription) {
+            metaDescription.setAttribute('content', articleData.meta_description);
+          }
+        }
+      } else {
+        setNotFound(true);
+      }
+      
+      setLoading(false);
+    };
+
+    fetchArticle();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-300 rounded w-32 mb-8"></div>
+            <div className="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
+            <div className="h-64 bg-gray-300 rounded mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (notFound || !article) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -47,11 +105,11 @@ const BlogPost: React.FC = () => {
             </span>
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <span>{article.date}</span>
+              <span>{new Date(article.date).toLocaleDateString()}</span>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              <span>{article.readTime}</span>
+              <span>{article.read_time}</span>
             </div>
           </div>
 
@@ -78,19 +136,8 @@ const BlogPost: React.FC = () => {
             {article.excerpt}
           </p>
           
-          <div className="text-gray-800 leading-relaxed">
+          <div className="text-gray-800 leading-relaxed whitespace-pre-line">
             {article.content}
-            
-            <p className="mt-6">
-              В современном мире веб-разработки важно следить за последними тенденциями и применять лучшие практики. 
-              Наша команда CosmoLab постоянно изучает новые технологии и делится знаниями с сообществом.
-            </p>
-            
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Заключение</h2>
-            <p>
-              Применение описанных в статье методов поможет вам достичь лучших результатов в вашем проекте. 
-              Помните, что качественный подход к разработке и дизайну - это залог успеха любого веб-проекта.
-            </p>
           </div>
         </div>
 

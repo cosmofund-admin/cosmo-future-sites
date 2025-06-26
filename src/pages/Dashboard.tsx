@@ -2,14 +2,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User, FileText, Briefcase, Settings, LogOut } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
+  const { user, profile, signOut, checkAdminStatus } = useAuth();
 
   const myProjects = [
     { id: 1, title: 'Мой интернет-магазин', status: 'В разработке', progress: 75 },
     { id: 2, title: 'Корпоративный сайт', status: 'Завершен', progress: 100 }
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -18,8 +24,13 @@ const Dashboard: React.FC = () => {
           <div className="flex justify-between items-center">
             <Link to="/" className="text-2xl font-bold text-blue-600">CosmoLab</Link>
             <div className="flex items-center space-x-4">
-              <Link to="/admin" className="text-gray-600 hover:text-blue-600">Админ панель</Link>
-              <button className="flex items-center text-gray-600 hover:text-blue-600">
+              {checkAdminStatus() && (
+                <Link to="/admin" className="text-gray-600 hover:text-blue-600">Админ панель</Link>
+              )}
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center text-gray-600 hover:text-blue-600"
+              >
                 <LogOut className="w-5 h-5 mr-1" />
                 Выйти
               </button>
@@ -38,8 +49,23 @@ const Dashboard: React.FC = () => {
                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User className="w-10 h-10 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold">Иван Петров</h3>
-                <p className="text-gray-600">ivan@email.com</p>
+                <h3 className="text-lg font-semibold">
+                  {profile?.first_name && profile?.last_name 
+                    ? `${profile.first_name} ${profile.last_name}`
+                    : 'Пользователь'
+                  }
+                </h3>
+                <p className="text-gray-600">{user?.email}</p>
+                {profile?.wallet_address && (
+                  <p className="text-xs text-gray-500 mt-1 font-mono">
+                    {profile.wallet_address.slice(0, 6)}...{profile.wallet_address.slice(-4)}
+                  </p>
+                )}
+                {checkAdminStatus() && (
+                  <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mt-2">
+                    Администратор
+                  </span>
+                )}
               </div>
               
               <nav className="space-y-2">
@@ -83,19 +109,37 @@ const Dashboard: React.FC = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Имя</label>
-                      <input type="text" defaultValue="Иван" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      <input 
+                        type="text" 
+                        defaultValue={profile?.first_name || ''} 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg" 
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Фамилия</label>
-                      <input type="text" defaultValue="Петров" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      <input 
+                        type="text" 
+                        defaultValue={profile?.last_name || ''} 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg" 
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                      <input type="email" defaultValue="ivan@email.com" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      <input 
+                        type="email" 
+                        defaultValue={user?.email || ''} 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg" 
+                        disabled
+                      />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
-                      <input type="tel" defaultValue="+7 999 123-45-67" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Кошелек</label>
+                      <input 
+                        type="text" 
+                        defaultValue={profile?.wallet_address || ''} 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg" 
+                        disabled
+                      />
                     </div>
                   </div>
                   <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg">Сохранить</button>

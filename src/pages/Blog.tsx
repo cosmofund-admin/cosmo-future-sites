@@ -1,15 +1,19 @@
 
-import React, { useState } from 'react';
-import { Calendar, User, Search, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, User, Search, ArrowRight, Link as LinkIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useLanguage } from '../contexts/LanguageContext';
-import { searchArticles } from '../utils/articleGenerator';
+import { searchArticles, getTotalArticlesCount, type Article } from '../utils/supabaseQueries';
 
 const Blog: React.FC = () => {
   const { t, currentLanguage } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(t('blog.category.all'));
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
     t('blog.category.all'),
@@ -19,7 +23,21 @@ const Blog: React.FC = () => {
     t('blog.category.marketing')
   ];
 
-  const filteredArticles = searchArticles(searchTerm, selectedCategory, currentLanguage);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const [articlesData, count] = await Promise.all([
+        searchArticles(searchTerm, selectedCategory, currentLanguage, 50),
+        getTotalArticlesCount(currentLanguage)
+      ]);
+      
+      setArticles(articlesData);
+      setTotalCount(count);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [searchTerm, selectedCategory, currentLanguage]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -31,8 +49,11 @@ const Blog: React.FC = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               {t('blog.title')} CosmoLab
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 mb-4">
               {t('blog.subtitle')}
+            </p>
+            <p className="text-lg text-blue-600 font-semibold">
+              Всего статей: {totalCount.toLocaleString()}
             </p>
           </div>
 
@@ -70,70 +91,89 @@ const Blog: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredArticles.map((article) => (
-            <article key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200 group">
-              <img 
-                src={article.image} 
-                alt={article.title}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    {article.category}
-                  </span>
-                  <span>{article.readTime}</span>
-                </div>
-                
-                <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 cursor-pointer group-hover:text-blue-600 transition-colors">
-                  {article.title}
-                </h2>
-                
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {article.excerpt}
-                </p>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {article.tags.slice(0, 3).map((tag) => (
-                    <span 
-                      key={tag}
-                      className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
-                  <div className="flex items-center gap-1">
-                    <User className="w-4 h-4" />
-                    <span>{article.author}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>{article.date}</span>
-                  </div>
-                </div>
-
-                <button className="mt-4 flex items-center text-blue-600 hover:text-blue-700 transition-colors">
-                  {t('blog.read')}
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </button>
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
+                <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded mb-2 w-3/4"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
               </div>
-            </article>
-          ))}
-        </div>
-
-        {filteredArticles.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
-              По вашему запросу статьи не найдены
-            </p>
-            <p className="text-gray-400 mt-2">
-              Попробуйте изменить поисковый запрос или выберите другую категорию
-            </p>
+            ))}
           </div>
+        ) : (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {articles.map((article) => (
+                <article key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200 group">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="p-6">
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        {article.category}
+                      </span>
+                      <span>{article.read_time}</span>
+                    </div>
+                    
+                    <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 cursor-pointer group-hover:text-blue-600 transition-colors">
+                      {article.title}
+                    </h2>
+                    
+                    <p className="text-gray-600 mb-4 line-clamp-3">
+                      {article.excerpt}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {article.tags.slice(0, 3).map((tag) => (
+                        <span 
+                          key={tag}
+                          className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100 mb-4">
+                      <div className="flex items-center gap-1">
+                        <User className="w-4 h-4" />
+                        <span>{article.author}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>{new Date(article.date).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+
+                    <Link 
+                      to={`/blog/${article.id}`}
+                      className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors font-medium"
+                    >
+                      <LinkIcon className="w-4 h-4 mr-1" />
+                      {t('blog.read')}
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {articles.length === 0 && !loading && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">
+                  По вашему запросу статьи не найдены
+                </p>
+                <p className="text-gray-400 mt-2">
+                  Попробуйте изменить поисковый запрос или выберите другую категорию
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
