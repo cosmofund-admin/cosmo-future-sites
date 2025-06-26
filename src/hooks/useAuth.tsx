@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,14 +12,19 @@ interface AuthContextProps {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   connectWallet: () => Promise<void>;
+  signInWithMetaMask: () => Promise<void>;
+  checkAdminStatus: () => boolean;
 }
 
 interface UserProfile {
   id: string;
-  username: string;
-  avatar_url: string;
-  website: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  wallet_address: string | null;
   is_admin: boolean;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -109,9 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email,
         password,
         options: {
-          data: {
-            username: email.split('@')[0],
-          }
+          emailRedirectTo: `${window.location.origin}/`,
         }
       });
 
@@ -194,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (existingUser) {
         // User exists, update auth state
         setUser({ ...user, id: existingUser.id } as User);
-        setProfile(existingUser as UserProfile);
+        setProfile(existingUser);
         toast.success('Кошелек подключен и вход выполнен!');
         return;
       }
@@ -202,7 +206,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // No user exists, create a new profile
       const { data: newProfile, error: profileError } = await supabase
         .from('profiles')
-        .insert([{ id: user?.id, wallet_address: walletAddress, username: 'Новый пользователь' }])
+        .insert([{ id: user?.id, wallet_address: walletAddress, first_name: 'Новый пользователь' }])
         .select('*')
         .single();
 
@@ -213,12 +217,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       setUser({ ...user, id: newProfile.id } as User);
-      setProfile(newProfile as UserProfile);
+      setProfile(newProfile);
       toast.success('Кошелек подключен и создан новый профиль!');
     } catch (error: any) {
       console.error("Wallet connection error:", error);
       toast.error(error.message || 'Не удалось подключить кошелек.');
     }
+  };
+
+  const signInWithMetaMask = async () => {
+    await connectWallet();
+  };
+
+  const checkAdminStatus = (): boolean => {
+    return profile?.is_admin === true;
   };
 
   const value = {
@@ -228,7 +240,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signIn,
     signOut,
-    connectWallet
+    connectWallet,
+    signInWithMetaMask,
+    checkAdminStatus
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
