@@ -4,6 +4,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -30,7 +32,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
         
     - name: Install dependencies
@@ -39,8 +41,8 @@ jobs:
     - name: Build
       run: npm run build
       env:
-        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://demo.supabase.co' }}
-        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'demo-key' }}
+        VITE_SUPABASE_URL: https://uhxkfyqxhqxfsjkobcdd.supabase.co
+        VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoeGtmeXF4aHF4ZnNqa29iY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA2OTk4NTksImV4cCI6MjA2NjI3NTg1OX0.Hec39Gi-G5fPXpBJIgVIl25V0CPsztLy1nVj3XNK5oI
         
     - name: Setup Pages
       uses: actions/configure-pages@v4

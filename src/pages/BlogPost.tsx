@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Tag } from 'lucide-react';
@@ -29,7 +30,9 @@ const BlogPost: React.FC = () => {
         return;
       }
 
+      console.log('Fetching article with ID:', numericId);
       const articleData = await getArticleById(numericId);
+      console.log('Article data received:', articleData);
       
       if (articleData) {
         setArticle(articleData);
@@ -37,13 +40,14 @@ const BlogPost: React.FC = () => {
         // Обновляем мета-теги для SEO
         if (articleData.meta_title) {
           document.title = articleData.meta_title;
+        } else {
+          document.title = `${articleData.title} | CosmoLab`;
         }
         
-        if (articleData.meta_description) {
-          const metaDescription = document.querySelector('meta[name="description"]');
-          if (metaDescription) {
-            metaDescription.setAttribute('content', articleData.meta_description);
-          }
+        // Обновляем meta description
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription && articleData.meta_description) {
+          metaDescription.setAttribute('content', articleData.meta_description);
         }
       } else {
         setNotFound(true);
@@ -83,8 +87,13 @@ const BlogPost: React.FC = () => {
         <Header />
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Статья не найдена</h1>
-          <Link to="/blog" className="text-blue-600 hover:text-blue-700">
-            ← Вернуться к блогу
+          <p className="text-gray-600 mb-8">К сожалению, запрашиваемая статья не существует или была удалена.</p>
+          <Link 
+            to="/blog" 
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Вернуться к блогу
           </Link>
         </div>
         <Footer />
@@ -112,7 +121,7 @@ const BlogPost: React.FC = () => {
             </span>
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <span>{new Date(article.date).toLocaleDateString()}</span>
+              <span>{new Date(article.date).toLocaleDateString('ru-RU')}</span>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
@@ -154,9 +163,9 @@ const BlogPost: React.FC = () => {
             <span className="text-sm font-medium text-gray-700">Теги:</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {article.tags.map((tag) => (
+            {article.tags.map((tag, index) => (
               <span 
-                key={tag}
+                key={`${tag}-${index}`}
                 className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors cursor-pointer"
               >
                 #{tag}
