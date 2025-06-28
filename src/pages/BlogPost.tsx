@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Tag, Share2, BookOpen } from 'lucide-react';
@@ -84,9 +83,9 @@ const BlogPost: React.FC = () => {
         };
         
         // Добавляем JSON-LD
-        let jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+        let jsonLdScript = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement;
         if (!jsonLdScript) {
-          jsonLdScript = document.createElement('script');
+          jsonLdScript = document.createElement('script') as HTMLScriptElement;
           jsonLdScript.type = 'application/ld+json';
           document.head.appendChild(jsonLdScript);
         }
