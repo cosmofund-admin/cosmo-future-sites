@@ -1,16 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Zap, Shield, Award, Code, Palette, Search, Smartphone } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import OrderModal from './OrderModal';
 
 const ServicesSection: React.FC = () => {
   const { t, getCurrentCurrency } = useLanguage();
   const { symbol } = getCurrentCurrency();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
 
   const services = [
     {
-      name: t('services.landing'),
-      price: t('services.landing.price'),
+      name: 'Лендинг',
+      price: '95',
       description: 'Эффективная страница для конверсии посетителей в клиентов',
       features: [
         'Адаптивный дизайн',
@@ -24,8 +27,8 @@ const ServicesSection: React.FC = () => {
       icon: <Zap className="w-8 h-8" />
     },
     {
-      name: t('services.simple'),
-      price: t('services.simple.price'),
+      name: 'Сайт',
+      price: '195',
       description: 'Многостраничный сайт для представления вашего бизнеса',
       features: [
         'До 5 страниц',
@@ -40,8 +43,8 @@ const ServicesSection: React.FC = () => {
       icon: <Code className="w-8 h-8" />
     },
     {
-      name: t('services.cabinet'),
-      price: t('services.cabinet.price'),
+      name: 'Сайт с кабинетом',
+      price: '295',
       description: 'Сайт с личным кабинетом и расширенным функционалом',
       features: [
         'Личный кабинет пользователей',
@@ -66,12 +69,17 @@ const ServicesSection: React.FC = () => {
     { name: 'Performance', icon: <Zap className="w-6 h-6" /> }
   ];
 
+  const handleOrderClick = (serviceName: string) => {
+    setSelectedService(serviceName);
+    setIsModalOpen(true);
+  };
+
   return (
     <section id="services" className="section-padding bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            {t('services.title').split(' ')[0]} <span className="gradient-text">{t('services.title').split(' ').slice(1).join(' ')}</span>
+            Наши <span className="gradient-text">Услуги</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
             Профессиональная разработка сайтов с использованием современных технологий
@@ -107,7 +115,7 @@ const ServicesSection: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
                 <p className="text-gray-600 text-sm mb-6">{service.description}</p>
                 <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {symbol}{service.price}
+                  от {symbol}{service.price}
                 </div>
                 <p className="text-gray-500 text-sm">за проект</p>
               </div>
@@ -121,17 +129,26 @@ const ServicesSection: React.FC = () => {
                 ))}
               </ul>
 
-              <button className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                service.popular 
-                  ? 'btn-premium' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              <button 
+                onClick={() => handleOrderClick(service.name)}
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                  service.popular 
+                    ? 'btn-premium' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
                 Заказать сейчас
               </button>
             </div>
           ))}
         </div>
       </div>
+
+      <OrderModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedService={selectedService}
+      />
     </section>
   );
 };
