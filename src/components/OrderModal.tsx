@@ -48,12 +48,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
         ]);
 
       if (error) {
+        console.error('Supabase error:', error);
         throw error;
       }
 
       alert('Заявка отправлена успешно!');
 
-      // Очистка формы
       setFormData({
         name: '',
         email: '',
@@ -76,7 +76,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -99,7 +99,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="Ваше имя"
             />
           </div>
@@ -114,7 +114,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="your@email.com"
             />
           </div>
@@ -128,7 +128,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="+7 (999) 123-45-67"
             />
           </div>
@@ -142,7 +142,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               name="telegram"
               value={formData.telegram}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="@username"
             />
           </div>
@@ -156,7 +156,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               name="whatsapp"
               value={formData.whatsapp}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="+7 999 123 45 67"
             />
           </div>
@@ -170,7 +170,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               value={formData.message}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               placeholder="Расскажите подробнее о вашем проекте..."
             />
           </div>
