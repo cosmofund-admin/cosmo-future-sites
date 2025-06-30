@@ -1,13 +1,7 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
-import { Button } from './ui/button';
-import { MessageSquare, Phone } from 'lucide-react';
+import { X } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
-import { useToast } from '../hooks/use-toast';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -16,7 +10,6 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedService }) => {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -58,10 +51,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
         throw error;
       }
 
-      toast({
-        title: "Заявка отправлена!",
-        description: "Мы свяжемся с вами в ближайшее время.",
-      });
+      alert('Заявка отправлена успешно!');
 
       // Очистка формы
       setFormData({
@@ -76,131 +66,134 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
       onClose();
     } catch (error) {
       console.error('Ошибка при отправке заявки:', error);
-      toast({
-        title: "Ошибка",
-        description: "Не удалось отправить заявку. Попробуйте еще раз.",
-        variant: "destructive",
-      });
+      alert('Ошибка при отправке заявки. Попробуйте еще раз.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-white border border-gray-200 shadow-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center text-gray-900">
-            Заказать: {selectedService}
-          </DialogTitle>
-        </DialogHeader>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        
+        <h2 className="text-2xl font-bold mb-4 text-gray-900">
+          Заказать: {selectedService}
+        </h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-700 font-medium">Имя *</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                placeholder="Ваше имя"
-                className="bg-white border-gray-300 text-gray-900"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 font-medium">Email *</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                placeholder="your@email.com"
-                className="bg-white border-gray-300 text-gray-900"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="phone" className="text-gray-700 font-medium">Телефон</Label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Имя *
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
-              placeholder="+7 (999) 123-45-67"
-              className="bg-white border-gray-300 text-gray-900"
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ваше имя"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="telegram" className="text-gray-700 font-medium">Telegram</Label>
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="telegram"
-                  name="telegram"
-                  value={formData.telegram}
-                  onChange={handleInputChange}
-                  placeholder="@username"
-                  className="pl-10 bg-white border-gray-300 text-gray-900"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="whatsapp" className="text-gray-700 font-medium">WhatsApp</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="whatsapp"
-                  name="whatsapp"
-                  value={formData.whatsapp}
-                  onChange={handleInputChange}
-                  placeholder="+7 999 123 45 67"
-                  className="pl-10 bg-white border-gray-300 text-gray-900"
-                />
-              </div>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email *
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="your@email.com"
+            />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-gray-700 font-medium">Сообщение</Label>
-            <Textarea
-              id="message"
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Телефон
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="+7 (999) 123-45-67"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Telegram
+            </label>
+            <input
+              type="text"
+              name="telegram"
+              value={formData.telegram}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="@username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              WhatsApp
+            </label>
+            <input
+              type="text"
+              name="whatsapp"
+              value={formData.whatsapp}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="+7 999 123 45 67"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Сообщение
+            </label>
+            <textarea
               name="message"
               value={formData.message}
               onChange={handleInputChange}
-              placeholder="Расскажите подробнее о вашем проекте..."
               rows={3}
-              className="bg-white border-gray-300 text-gray-900"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Расскажите подробнее о вашем проекте..."
             />
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button
+            <button
               type="button"
-              variant="outline"
               onClick={onClose}
-              className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Отмена
-            </Button>
-            <Button
+            </button>
+            <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
               {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
-            </Button>
+            </button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 

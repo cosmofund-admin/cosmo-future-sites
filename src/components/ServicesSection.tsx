@@ -130,7 +130,7 @@ const ServicesSection: React.FC = () => {
 
               <button 
                 onClick={() => handleOrderClick(service.name)}
-                className="w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 btn-premium"
+                className="w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
               >
                 Заказать сейчас
               </button>
