@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { supabase } from '../integrations/supabase/client';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -33,25 +32,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('orders')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            service: selectedService,
-            message: formData.message,
-            telegram: formData.telegram,
-            whatsapp: formData.whatsapp
-          }
-        ]);
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
+      // Имитация отправки формы
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       alert('Заявка отправлена успешно!');
 
       setFormData({

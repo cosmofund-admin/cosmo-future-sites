@@ -16,8 +16,7 @@ const CasesSection: React.FC = () => {
         conversion: '+85%',
         speed: '1.2с загрузка',
         seo: 'ТОП-3 в Google'
-      },
-      link: '#'
+      }
     },
     {
       id: 2,
@@ -31,8 +30,7 @@ const CasesSection: React.FC = () => {
         conversion: '+120%',
         speed: '0.9с загрузка',
         seo: 'ТОП-1 в Яндекс'
-      },
-      link: '#'
+      }
     },
     {
       id: 3,
@@ -46,53 +44,7 @@ const CasesSection: React.FC = () => {
         retention: '78%',
         completion: '65%',
         rating: '4.8/5'
-      },
-      link: '#'
-    },
-    {
-      id: 4,
-      title: 'Ресторанная сеть',
-      category: 'Ресторанный бизнес',
-      image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500',
-      description: 'Сайт с онлайн-бронированием столиков, меню и системой доставки',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Socket.io'],
-      result: '+300% онлайн-заказов',
-      metrics: {
-        bookings: '+250%',
-        orders: '+300%',
-        rating: '4.9/5'
-      },
-      link: '#'
-    },
-    {
-      id: 5,
-      title: 'Медицинская клиника',
-      category: 'Медицина',
-      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500',
-      description: 'Сайт клиники с записью к врачам, личным кабинетом пациентов и телемедициной',
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'WebRTC'],
-      result: '+180% записей онлайн',
-      metrics: {
-        appointments: '+180%',
-        satisfaction: '96%',
-        efficiency: '+60%'
-      },
-      link: '#'
-    },
-    {
-      id: 6,
-      title: 'Агентство недвижимости',
-      category: 'Недвижимость',
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500',
-      description: 'Платформа для поиска и продажи недвижимости с VR-турами и ипотечным калькулятором',
-      technologies: ['React', 'Three.js', 'Node.js', 'MongoDB'],
-      result: '+220% конверсия в заявки',
-      metrics: {
-        leads: '+220%',
-        viewings: '+150%',
-        sales: '+80%'
-      },
-      link: '#'
+      }
     }
   ];
 
@@ -129,7 +81,7 @@ const CasesSection: React.FC = () => {
                   {case_.title}
                 </h3>
                 
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4">
                   {case_.description}
                 </p>
 
@@ -163,14 +115,6 @@ const CasesSection: React.FC = () => {
                     <span>Подробнее</span>
                     <ArrowRight className="ml-1 w-4 h-4" />
                   </button>
-                  
-                  <a
-                    href={case_.link}
-                    className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Демо</span>
-                  </a>
                 </div>
               </div>
             </div>
