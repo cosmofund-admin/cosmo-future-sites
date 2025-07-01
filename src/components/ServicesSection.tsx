@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
 import { Check, Zap, Shield, Award, Code, Palette, Search, Smartphone } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 import OrderModal from './OrderModal';
 
 const ServicesSection: React.FC = () => {
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('');
 
@@ -72,16 +74,17 @@ const ServicesSection: React.FC = () => {
   };
 
   return (
-    <section id="services" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="services" className="section-padding bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Наши <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Услуги</span>
+            Наши <span className="gradient-text">Услуги</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
             Профессиональная разработка сайтов с использованием современных технологий
           </p>
           
+          {/* Технологии */}
           <div className="flex flex-wrap justify-center gap-4 mb-16">
             {technologies.map((tech) => (
               <div key={tech.name} className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-200/50">
@@ -94,7 +97,7 @@ const ServicesSection: React.FC = () => {
 
         <div className="grid lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div key={index} className={`relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${service.popular ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}`}>
+            <div key={index} className={`relative glass rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${service.popular ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}`}>
               {service.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
@@ -127,7 +130,7 @@ const ServicesSection: React.FC = () => {
 
               <button 
                 onClick={() => handleOrderClick(service.name)}
-                className="w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
+                className="w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 btn-premium"
               >
                 Заказать сейчас
               </button>
