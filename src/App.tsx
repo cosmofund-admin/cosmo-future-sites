@@ -13,6 +13,8 @@ import BlogPost from "./pages/BlogPost";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import AdminPanel from "./pages/AdminPanel";
+import AdminSettings from "./pages/AdminSettings";
+import PaymentPage from "./pages/PaymentPage";
 
 const queryClient = new QueryClient();
 
@@ -38,10 +40,18 @@ const App = () => (
                 } 
               />
               <Route 
-                path="/admin" 
+                path="/payment" 
+                element={
+                  <ProtectedRoute>
+                    <PaymentPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/settings" 
                 element={
                   <ProtectedRoute requireAdmin>
-                    <AdminPanel />
+                    <AdminSettings />
                   </ProtectedRoute>
                 } 
               />

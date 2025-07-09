@@ -1,17 +1,55 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { User, FileText, Briefcase, Settings, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, FileText, Briefcase, Settings, LogOut, CreditCard, Eye } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../integrations/supabase/client';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { useToast } from '../hooks/use-toast';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const { user, profile, signOut, checkAdminStatus } = useAuth();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const myProjects = [
-    { id: 1, title: 'Мой интернет-магазин', status: 'В разработке', progress: 75 },
-    { id: 2, title: 'Корпоративный сайт', status: 'Завершен', progress: 100 }
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+      fetchPayments();
+    }
+  }, [user]);
+
+  const fetchOrders = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setOrders(data);
+    }
+  };
+
+  const fetchPayments = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*, orders(service)')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setPayments(data);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -91,6 +129,13 @@ const Dashboard: React.FC = () => {
                   Заказы
                 </button>
                 <button
+                  onClick={() => setActiveTab('payments')}
+                  className={`w-full text-left px-4 py-2 rounded-lg flex items-center ${activeTab === 'payments' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                >
+                  <CreditCard className="w-5 h-5 mr-3" />
+                  Платежи
+                </button>
+                <button
                   onClick={() => setActiveTab('settings')}
                   className={`w-full text-left px-4 py-2 rounded-lg flex items-center ${activeTab === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
                 >
@@ -148,28 +193,36 @@ const Dashboard: React.FC = () => {
 
               {activeTab === 'projects' && (
                 <div>
-                  <h2 className="text-xl font-semibold mb-6">Мои проекты</h2>
+                  <h2 className="text-xl font-semibold mb-6">Мои заказы</h2>
                   <div className="space-y-4">
-                    {myProjects.map((project) => (
-                      <div key={project.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-lg font-medium">{project.title}</h3>
-                          <span className={`px-2 py-1 rounded-full text-xs ${project.status === 'Завершен' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                            {project.status}
-                          </span>
-                        </div>
-                        <div className="mb-3">
-                          <div className="flex justify-between text-sm text-gray-600 mb-1">
-                            <span>Прогресс</span>
-                            <span>{project.progress}%</span>
+                    {orders.length === 0 ? (
+                      <p className="text-gray-500">У вас пока нет заказов</p>
+                    ) : (
+                      orders.map((order) => (
+                        <div key={order.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="text-lg font-medium">{order.service}</h3>
+                              <p className="text-gray-600">${order.price}</p>
+                            </div>
+                            <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                              {order.status === 'pending' ? 'В обработке' : 
+                               order.status === 'paid' ? 'Оплачен' : 
+                               order.status === 'completed' ? 'Завершен' : order.status}
+                            </Badge>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${project.progress}%` }}></div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => navigate(`/payment?orderId=${order.id}`)}
+                              disabled={order.status === 'completed'}
+                            >
+                              Оплатить
+                            </Button>
                           </div>
                         </div>
-                        <button className="text-blue-600 hover:text-blue-800 text-sm">Подробнее</button>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -178,19 +231,74 @@ const Dashboard: React.FC = () => {
                 <div>
                   <h2 className="text-xl font-semibold mb-6">История заказов</h2>
                   <div className="space-y-4">
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="text-lg font-medium">Заказ #001</h3>
-                          <p className="text-gray-600">Лендинг страница</p>
-                          <p className="text-sm text-gray-500">15 января 2024</p>
+                    {orders.length === 0 ? (
+                      <p className="text-gray-500">У вас пока нет заказов</p>
+                    ) : (
+                      orders.map((order) => (
+                        <div key={order.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="text-lg font-medium">{order.service}</h3>
+                              <p className="text-gray-600">{order.name}</p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(order.created_at).toLocaleDateString('ru-RU')}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-semibold">${order.price}</p>
+                              <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                                {order.status === 'pending' ? 'В обработке' : 
+                                 order.status === 'paid' ? 'Оплачен' : 
+                                 order.status === 'completed' ? 'Завершен' : order.status}
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-lg font-semibold">25 000 ₽</p>
-                          <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Оплачен</span>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'payments' && (
+                <div>
+                  <h2 className="text-xl font-semibold mb-6">История платежей</h2>
+                  <div className="space-y-4">
+                    {payments.length === 0 ? (
+                      <p className="text-gray-500">У вас пока нет платежей</p>
+                    ) : (
+                      payments.map((payment) => (
+                        <div key={payment.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="text-lg font-medium">{payment.orders?.service || 'Заказ'}</h3>
+                              <p className="text-gray-600">Способ: {payment.payment_method}</p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(payment.created_at).toLocaleDateString('ru-RU')}
+                              </p>
+                              {payment.transaction_hash && (
+                                <p className="text-xs font-mono text-gray-500 break-all">
+                                  Hash: {payment.transaction_hash}
+                                </p>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-semibold">
+                                {payment.amount} {payment.currency}
+                              </p>
+                              <Badge variant={
+                                payment.status === 'confirmed' ? 'default' : 
+                                payment.status === 'failed' ? 'destructive' : 'secondary'
+                              }>
+                                {payment.status === 'pending' ? 'Ожидает' : 
+                                 payment.status === 'confirmed' ? 'Подтвержден' : 
+                                 payment.status === 'failed' ? 'Отклонен' : payment.status}
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
