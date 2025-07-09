@@ -6,7 +6,7 @@ const CasesSection: React.FC = () => {
   const cases = [
     {
       id: 1,
-      title: 'Интернет-магазин модной одежды',
+      title: 'Интернет-магазин модной одежды "StyleHub"',
       category: 'E-commerce',
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
       description: 'Современный интернет-магазин с системой оплаты, доставки и личным кабинетом пользователя',
@@ -17,11 +17,11 @@ const CasesSection: React.FC = () => {
         speed: '1.2с загрузка',
         seo: 'ТОП-3 в Google'
       },
-      link: '#'
+      link: 'https://stylehub-demo.com'
     },
     {
       id: 2,
-      title: 'Корпоративный сайт IT-компании',
+      title: 'Корпоративный сайт IT-компании "TechPro"',
       category: 'Корпоративный',
       image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
       description: 'Презентационный сайт с системой управления контентом и интеграцией с CRM',
@@ -32,11 +32,11 @@ const CasesSection: React.FC = () => {
         speed: '0.9с загрузка',
         seo: 'ТОП-1 в Яндекс'
       },
-      link: '#'
+      link: 'https://techpro-demo.com'
     },
     {
       id: 3,
-      title: 'Платформа онлайн-обучения',
+      title: 'Платформа онлайн-обучения "EduSpace"',
       category: 'EdTech',
       image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500',
       description: 'Образовательная платформа с видеоуроками, тестами и системой сертификации',
@@ -47,11 +47,11 @@ const CasesSection: React.FC = () => {
         completion: '65%',
         rating: '4.8/5'
       },
-      link: '#'
+      link: 'https://eduspace-demo.com'
     },
     {
       id: 4,
-      title: 'Ресторанная сеть',
+      title: 'Ресторанная сеть "Вкусное место"',
       category: 'Ресторанный бизнес',
       image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500',
       description: 'Сайт с онлайн-бронированием столиков, меню и системой доставки',
@@ -62,11 +62,11 @@ const CasesSection: React.FC = () => {
         orders: '+300%',
         rating: '4.9/5'
       },
-      link: '#'
+      link: 'https://restaurant-demo.com'
     },
     {
       id: 5,
-      title: 'Медицинская клиника',
+      title: 'Медицинская клиника "HealthCare+"',
       category: 'Медицина',
       image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500',
       description: 'Сайт клиники с записью к врачам, личным кабинетом пациентов и телемедициной',
@@ -77,11 +77,11 @@ const CasesSection: React.FC = () => {
         satisfaction: '96%',
         efficiency: '+60%'
       },
-      link: '#'
+      link: 'https://healthcare-demo.com'
     },
     {
       id: 6,
-      title: 'Агентство недвижимости',
+      title: 'Агентство недвижимости "PrimeEstate"',
       category: 'Недвижимость',
       image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500',
       description: 'Платформа для поиска и продажи недвижимости с VR-турами и ипотечным калькулятором',
@@ -92,7 +92,7 @@ const CasesSection: React.FC = () => {
         viewings: '+150%',
         sales: '+80%'
       },
-      link: '#'
+      link: 'https://primeestate-demo.com'
     }
   ];
 
@@ -166,6 +166,8 @@ const CasesSection: React.FC = () => {
                   
                   <a
                     href={case_.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
