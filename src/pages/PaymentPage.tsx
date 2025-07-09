@@ -104,8 +104,15 @@ const PaymentPage: React.FC = () => {
     }
 
     try {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setMetamaskAccount(accounts[0]);
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (accounts.length > 0) {
+        setMetamaskAccount(accounts[0]);
+        toast({
+          title: "Успешно подключено",
+          description: "Metamask подключен",
+        });
+      }
     } catch (error) {
       toast({
         title: "Ошибка подключения",

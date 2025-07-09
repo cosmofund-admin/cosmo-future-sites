@@ -1,11 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Zap, Shield, Award, Code, Palette, Search, Smartphone } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import OrderModal from './OrderModal';
 
 const ServicesSection: React.FC = () => {
   const { t, getCurrentCurrency } = useLanguage();
   const { symbol } = getCurrentCurrency();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
 
   const services = [
     {
@@ -121,17 +124,29 @@ const ServicesSection: React.FC = () => {
                 ))}
               </ul>
 
-              <button className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                service.popular 
-                  ? 'btn-premium' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              <button 
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                  service.popular 
+                    ? 'btn-premium' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                onClick={() => {
+                  setSelectedService(service.name);
+                  setIsModalOpen(true);
+                }}
+              >
                 Заказать сейчас
               </button>
             </div>
           ))}
         </div>
       </div>
+      
+      <OrderModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedService={selectedService}
+      />
     </section>
   );
 };

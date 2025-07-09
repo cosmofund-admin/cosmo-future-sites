@@ -25,8 +25,8 @@ const AdminPanel: React.FC = () => {
   ];
 
   const users = [
-    { id: 1, name: 'Иван Петров', email: 'ivan@email.com', role: 'Клиент' },
-    { id: 2, name: 'Анна Смирнова', email: 'anna@email.com', role: 'Админ' }
+    { id: 1, name: 'Иван Петров', email: 'info@cosmo-lab.space', role: 'Клиент' },
+    { id: 2, name: 'Анна Смирнова', email: 'info@cosmo-lab.space', role: 'Админ' }
   ];
 
   useEffect(() => {
