@@ -5,7 +5,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import OrderModal from './OrderModal';
 
 const ServicesSection: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, getCurrentCurrency } = useLanguage();
+  const { symbol } = getCurrentCurrency();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('');
 
@@ -114,7 +115,7 @@ const ServicesSection: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
                 <p className="text-gray-600 text-sm mb-6">{service.description}</p>
                 <div className="text-4xl font-bold text-gray-900 mb-2">
-                  от ${service.price}
+                  от {symbol}{service.price}
                 </div>
                 <p className="text-gray-500 text-sm">за проект</p>
               </div>
@@ -130,7 +131,11 @@ const ServicesSection: React.FC = () => {
 
               <button 
                 onClick={() => handleOrderClick(service.name)}
-                className="w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 btn-premium"
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                  service.popular 
+                    ? 'btn-premium' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
               >
                 Заказать сейчас
               </button>

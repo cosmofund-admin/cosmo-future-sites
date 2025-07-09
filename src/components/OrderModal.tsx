@@ -88,9 +88,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-white border border-gray-200 shadow-2xl">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center text-gray-900">
+          <DialogTitle className="text-2xl font-bold text-center">
             Заказать: {selectedService}
           </DialogTitle>
         </DialogHeader>
@@ -98,7 +98,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-700 font-medium">Имя *</Label>
+              <Label htmlFor="name">Имя *</Label>
               <Input
                 id="name"
                 name="name"
@@ -106,11 +106,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
                 onChange={handleInputChange}
                 required
                 placeholder="Ваше имя"
-                className="bg-white border-gray-300 text-gray-900"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 font-medium">Email *</Label>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 name="email"
@@ -119,13 +118,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
                 onChange={handleInputChange}
                 required
                 placeholder="your@email.com"
-                className="bg-white border-gray-300 text-gray-900"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-gray-700 font-medium">Телефон</Label>
+            <Label htmlFor="phone">Телефон</Label>
             <Input
               id="phone"
               name="phone"
@@ -133,13 +131,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               value={formData.phone}
               onChange={handleInputChange}
               placeholder="+7 (999) 123-45-67"
-              className="bg-white border-gray-300 text-gray-900"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="telegram" className="text-gray-700 font-medium">Telegram</Label>
+              <Label htmlFor="telegram">Telegram</Label>
               <div className="relative">
                 <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
@@ -148,12 +145,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
                   value={formData.telegram}
                   onChange={handleInputChange}
                   placeholder="@username"
-                  className="pl-10 bg-white border-gray-300 text-gray-900"
+                  className="pl-10"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="whatsapp" className="text-gray-700 font-medium">WhatsApp</Label>
+              <Label htmlFor="whatsapp">WhatsApp</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
@@ -162,14 +159,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
                   value={formData.whatsapp}
                   onChange={handleInputChange}
                   placeholder="+7 999 123 45 67"
-                  className="pl-10 bg-white border-gray-300 text-gray-900"
+                  className="pl-10"
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message" className="text-gray-700 font-medium">Сообщение</Label>
+            <Label htmlFor="message">Сообщение</Label>
             <Textarea
               id="message"
               name="message"
@@ -177,7 +174,6 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               onChange={handleInputChange}
               placeholder="Расскажите подробнее о вашем проекте..."
               rows={3}
-              className="bg-white border-gray-300 text-gray-900"
             />
           </div>
 
@@ -186,14 +182,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, selectedServic
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex-1"
             >
               Отмена
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              className="flex-1 bg-blue-600 hover:bg-blue-700"
             >
               {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
             </Button>
