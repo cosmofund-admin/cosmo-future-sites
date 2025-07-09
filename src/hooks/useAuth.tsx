@@ -1,251 +1,254 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-interface AuthContextProps {
+interface AuthContextType {
   user: User | null;
-  profile: UserProfile | null;
+  session: Session | null;
+  profile: any | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: any }>;
+  signInWithMetaMask: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  connectWallet: () => Promise<void>;
-  signInWithMetaMask: () => Promise<void>;
   checkAdminStatus: () => boolean;
 }
 
-interface UserProfile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  email: string | null;
-  wallet_address: string | null;
-  is_admin: boolean;
-  created_at: string | null;
-  updated_at: string | null;
-}
-
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-
-    const initializeAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.warn('Supabase auth error:', error);
-          if (mounted) {
-            setLoading(false);
-          }
-          return;
-        }
-
-        if (mounted && session?.user) {
-          setUser(session.user);
-          await fetchUserProfile(session.user.id);
-        }
-      } catch (error) {
-        console.warn('Auth initialization failed:', error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    // Set up auth state listener with error handling
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        
-        if (mounted) {
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            await fetchUserProfile(session.user.id);
-          } else {
-            setProfile(null);
-          }
-          
-          setLoading(false);
-        }
-      }
-    );
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const fetchUserProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
-
+      
       if (error && error.code !== 'PGRST116') {
-        console.warn('Error fetching profile:', error);
-        return;
+        console.error('Error fetching profile:', error);
+        return null;
       }
-
-      setProfile(data || null);
+      
+      return data;
     } catch (error) {
-      console.warn('Profile fetch failed:', error);
+      console.error('Error in fetchProfile:', error);
+      return null;
     }
   };
 
-  const signUp = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
+  useEffect(() => {
+    // Настройка слушателя изменений аутентификации
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id);
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Получаем профиль пользователя после изменения состояния
+          setTimeout(async () => {
+            const profileData = await fetchProfile(session.user.id);
+            setProfile(profileData);
+          }, 0);
+        } else {
+          setProfile(null);
         }
-      });
-
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setUser(data.user);
-        toast.success('Регистрация прошла успешно! Подтвердите ваш email.');
+        
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
+    );
+
+    // Проверяем существующую сессию
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        setTimeout(async () => {
+          const profileData = await fetchProfile(session.user.id);
+          setProfile(profileData);
+        }, 0);
+      }
+      
       setLoading(false);
-    }
-  };
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (error) {
+      toast.error('Ошибка входа: ' + error.message);
+    } else {
+      toast.success('Успешный вход в систему!');
+    }
+    
+    return { error };
+  };
+
+  const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+        }
+      }
+    });
+    
+    if (error) {
+      toast.error('Ошибка регистрации: ' + error.message);
+    } else {
+      toast.success('Регистрация успешна! Проверьте email для подтверждения.');
+    }
+    
+    return { error };
+  };
+
+  const signInWithMetaMask = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      if (!window.ethereum) {
+        toast.error('MetaMask не установлен!');
+        return { error: new Error('MetaMask не установлен') };
+      }
+
+      // Переключаем на BSC сеть
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x38' }], // BSC Mainnet
+        });
+      } catch (switchError: any) {
+        if (switchError.code === 4902) {
+          // Добавляем BSC сеть если её нет
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0x38',
+              chainName: 'BNB Smart Chain',
+              nativeCurrency: {
+                name: 'BNB',
+                symbol: 'BNB',
+                decimals: 18,
+              },
+              rpcUrls: ['https://bsc-dataseed.binance.org/'],
+              blockExplorerUrls: ['https://bscscan.com/'],
+            }],
+          });
+        }
+      }
+
+      // Подключаем кошелек
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      
+      const walletAddress = accounts[0];
+      
+      // Создаем сообщение для подписи
+      const message = `Вход в CosmoLab: ${Date.now()}`;
+      
+      // Подписываем сообщение
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [message, walletAddress],
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setUser(data.user);
-        await fetchUserProfile(data.user?.id as string);
-        toast.success('Вход выполнен!');
+      // Используем кошелек как email для Supabase
+      const email = `${walletAddress.toLowerCase()}@metamask.local`;
+      
+      // Пытаемся войти
+      let { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: signature,
+      });
+
+      // Если пользователя нет, создаем его
+      if (error && error.message.includes('Invalid login credentials')) {
+        const signUpResult = await supabase.auth.signUp({
+          email,
+          password: signature,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              wallet_address: walletAddress,
+              first_name: 'MetaMask',
+              last_name: 'User',
+            }
+          }
+        });
+        
+        if (signUpResult.error) {
+          toast.error('Ошибка создания аккаунта: ' + signUpResult.error.message);
+          return { error: signUpResult.error };
+        }
+        
+        // После регистрации пытаемся войти снова
+        const signInResult = await supabase.auth.signInWithPassword({
+          email,
+          password: signature,
+        });
+        
+        error = signInResult.error;
       }
+
+      if (error) {
+        toast.error('Ошибка входа через MetaMask: ' + error.message);
+        return { error };
+      }
+
+      toast.success('Успешный вход через MetaMask!');
+      return { error: null };
+      
     } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+      console.error('MetaMask error:', error);
+      toast.error('Ошибка MetaMask: ' + error.message);
+      return { error };
     }
   };
 
   const signOut = async () => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setUser(null);
-        setProfile(null);
-        toast.success('Вы вышли из системы');
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+    await supabase.auth.signOut();
+    toast.success('Вы вышли из системы');
   };
 
-  const connectWallet = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      toast.error('MetaMask не установлен!');
-      return;
-    }
-
-    try {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const walletAddress = accounts[0];
-
-      // Check if user exists with this wallet address
-      const { data: existingUser, error: userError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('wallet_address', walletAddress)
-        .single();
-
-      if (userError && userError.code !== 'PGRST116') {
-        console.error("Error checking for existing user:", userError);
-        toast.error('Ошибка при проверке пользователя.');
-        return;
-      }
-
-      if (existingUser) {
-        // User exists, update auth state
-        setUser({ ...user, id: existingUser.id } as User);
-        setProfile(existingUser);
-        toast.success('Кошелек подключен и вход выполнен!');
-        return;
-      }
-
-      // No user exists, create a new profile
-      const { data: newProfile, error: profileError } = await supabase
-        .from('profiles')
-        .insert([{ id: user?.id, wallet_address: walletAddress, first_name: 'Новый пользователь' }])
-        .select('*')
-        .single();
-
-      if (profileError) {
-        console.error("Error creating profile:", profileError);
-        toast.error('Ошибка при создании профиля.');
-        return;
-      }
-
-      setUser({ ...user, id: newProfile.id } as User);
-      setProfile(newProfile);
-      toast.success('Кошелек подключен и создан новый профиль!');
-    } catch (error: any) {
-      console.error("Wallet connection error:", error);
-      toast.error(error.message || 'Не удалось подключить кошелек.');
-    }
-  };
-
-  const signInWithMetaMask = async () => {
-    await connectWallet();
-  };
-
-  const checkAdminStatus = (): boolean => {
+  const checkAdminStatus = () => {
     return profile?.is_admin === true;
   };
 
-  const value = {
-    user,
-    profile,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    connectWallet,
-    signInWithMetaMask,
-    checkAdminStatus
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{
+      user,
+      session,
+      profile,
+      loading,
+      signIn,
+      signUp,
+      signInWithMetaMask,
+      signOut,
+      checkAdminStatus,
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {

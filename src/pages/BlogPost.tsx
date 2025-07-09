@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, Clock, ArrowLeft, Tag } from 'lucide-react';
@@ -21,15 +22,7 @@ const BlogPost: React.FC = () => {
         return;
       }
 
-      // Convert string ID to number
-      const numericId = parseInt(id, 10);
-      if (isNaN(numericId)) {
-        setNotFound(true);
-        setLoading(false);
-        return;
-      }
-
-      const articleData = await getArticleById(numericId);
+      const articleData = await getArticleById(parseInt(id));
       
       if (articleData) {
         setArticle(articleData);

@@ -30,7 +30,7 @@ const Auth: React.FC = () => {
       if (isLogin) {
         await signIn(email, password);
       } else {
-        await signUp(email, password);
+        await signUp(email, password, firstName, lastName);
       }
     } finally {
       setLoading(false);
