@@ -1,61 +1,60 @@
-
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { motion } from 'framer-motion';
+import { Box, Torus, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 
-const LogoMesh: React.FC = () => {
-  const meshRef = useRef<THREE.Group>(null);
-
+const AnimatedBox = () => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.2;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.3;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.2;
+      meshRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1;
     }
   });
 
   return (
-    <group ref={meshRef}>
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial 
-          color="#00ffff"
-          emissive="#8b5cf6"
-          emissiveIntensity={0.3}
-          transparent={true}
-          opacity={0.8}
-        />
-      </mesh>
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.6, 32, 32]} />
-        <meshStandardMaterial 
-          color="#f472b6"
-          emissive="#00ffff"
-          emissiveIntensity={0.2}
-          transparent={true}
-          opacity={0.6}
-          wireframe={true}
-        />
-      </mesh>
-    </group>
+    <Box ref={meshRef} args={[1, 1, 1]}>
+      <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.2} />
+    </Box>
+  );
+};
+
+const AnimatedTorus = () => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
+      meshRef.current.rotation.z = state.clock.elapsedTime * 0.4;
+      meshRef.current.position.x = Math.cos(state.clock.elapsedTime * 0.5) * 0.5;
+    }
+  });
+
+  return (
+    <Torus ref={meshRef} args={[0.8, 0.3, 16, 100]} position={[2, 0, 0]}>
+      <meshStandardMaterial color="#666666" metalness={0.9} roughness={0.1} />
+    </Torus>
   );
 };
 
 const Logo3D: React.FC = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1, ease: "easeOut" }}
-      className="w-64 h-64 mx-auto"
-    >
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} color="#00ffff" intensity={1} />
-        <pointLight position={[-10, -10, -10]} color="#8b5cf6" intensity={0.5} />
-        <LogoMesh />
+    <div className="w-full h-96 relative">
+      <Canvas className="bg-transparent">
+        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+        <ambientLight intensity={0.3} />
+        <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+        <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#ffffff" />
+        
+        <AnimatedBox />
+        <AnimatedTorus />
+        
+        {/* Fog for depth */}
+        <fog attach="fog" args={['#000000', 3, 10]} />
       </Canvas>
-    </motion.div>
+    </div>
   );
 };
 
