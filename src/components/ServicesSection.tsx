@@ -70,72 +70,56 @@ const ServicesSection: React.FC = () => {
   ];
 
   return (
-    <section id="services" className="section-padding bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="services" className="section-padding bg-black">
       <div className="container-custom">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            {t('services.title').split(' ')[0]} <span className="gradient-text">{t('services.title').split(' ').slice(1).join(' ')}</span>
+        <div className="text-center mb-20">
+          <h2 className="text-5xl lg:text-7xl font-bold text-white mb-8 tracking-tight">
+            УСЛУГИ
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-            Профессиональная разработка сайтов с использованием современных технологий
+          <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            Минималистичные решения для максимального результата
           </p>
-          
-          {/* Технологии */}
-          <div className="flex flex-wrap justify-center gap-4 mb-16">
-            {technologies.map((tech) => (
-              <div key={tech.name} className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-gray-200/50">
-                <div className="text-blue-600">{tech.icon}</div>
-                <span className="text-sm font-medium text-gray-700">{tech.name}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div key={index} className={`relative glass rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${service.popular ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}`}>
+            <div key={index} className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300">
               {service.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
-                    <Award className="w-4 h-4" />
-                    <span>Хит продаж</span>
+                <div className="absolute -top-3 left-6">
+                  <div className="bg-white text-black px-3 py-1 rounded-full text-sm font-medium">
+                    ХИТ
                   </div>
                 </div>
               )}
               
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl mb-4">
+              <div className="mb-8">
+                <div className="text-white mb-4">
                   {service.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
-                <p className="text-gray-600 text-sm mb-6">{service.description}</p>
-                <div className="text-4xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-white mb-4">{service.name}</h3>
+                <div className="text-4xl font-bold text-white mb-2">
                   {symbol}{service.price}
                 </div>
-                <p className="text-gray-500 text-sm">за проект</p>
+                <p className="text-white/60 text-sm mb-6">{service.description}</p>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {service.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
+                    <div className="w-1 h-1 bg-white rounded-full flex-shrink-0" />
+                    <span className="text-white/80 text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <button 
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                  service.popular 
-                    ? 'btn-premium' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className="w-full py-3 px-6 bg-white text-black rounded-xl font-medium hover:bg-white/90 transition-all duration-300"
                 onClick={() => {
                   setSelectedService(service.name);
                   setIsModalOpen(true);
                 }}
               >
-                Заказать сейчас
+                ЗАКАЗАТЬ
               </button>
             </div>
           ))}

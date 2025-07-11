@@ -97,93 +97,72 @@ const CasesSection: React.FC = () => {
   ];
 
   return (
-    <section id="cases" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Наши кейсы
+    <section id="cases" className="section-padding bg-black">
+      <div className="container-custom">
+        <div className="text-center mb-20">
+          <h2 className="text-5xl lg:text-7xl font-bold text-white mb-8 tracking-tight">
+            КЕЙСЫ
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Реальные проекты и достигнутые результаты. Мы создаем сайты, которые приносят прибыль нашим клиентам
+          <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            Проекты, которые работают на результат
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cases.map((case_) => (
-            <div key={case_.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 group">
+            <div key={case_.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-300 group">
               <div className="relative overflow-hidden">
                 <img 
                   src={case_.image} 
                   alt={case_.title}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
                     {case_.category}
                   </span>
                 </div>
               </div>
               
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-3">
                   {case_.title}
                 </h3>
                 
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-white/70 mb-4 text-sm">
                   {case_.description}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {case_.technologies.map((tech) => (
+                  {case_.technologies.slice(0, 3).map((tech) => (
                     <span 
                       key={tech}
-                      className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
+                      className="bg-white/10 text-white/80 text-xs px-2 py-1 rounded"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                  <div className="text-green-800 font-semibold text-sm mb-2">Результат:</div>
-                  <div className="text-green-700 font-medium">{case_.result}</div>
+                <div className="border border-white/20 rounded-lg p-4 mb-4">
+                  <div className="text-white font-medium text-sm mb-2">{case_.result}</div>
                   
-                  <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
-                    {Object.entries(case_.metrics).map(([key, value]) => (
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    {Object.entries(case_.metrics).slice(0, 3).map(([key, value]) => (
                       <div key={key} className="text-center">
-                        <div className="font-semibold text-green-800">{value}</div>
-                        <div className="text-green-600 capitalize">{key}</div>
+                        <div className="font-medium text-white">{value}</div>
+                        <div className="text-white/60 capitalize">{key}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-blue-600 hover:text-blue-700 transition-colors">
-                    <span>Подробнее</span>
-                    <ArrowRight className="ml-1 w-4 h-4" />
-                  </button>
-                  
-                  <a
-                    href={case_.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Демо</span>
-                  </a>
-                </div>
+                <button className="w-full py-2 px-4 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-sm">
+                  ПОДРОБНЕЕ
+                </button>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-            Посмотреть все кейсы
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </button>
         </div>
       </div>
     </section>
