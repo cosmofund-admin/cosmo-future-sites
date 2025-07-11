@@ -1,59 +1,34 @@
-import React, { useRef, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Box, Torus, PerspectiveCamera } from '@react-three/drei';
-import * as THREE from 'three';
-
-const AnimatedBox = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.3;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.2;
-      meshRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1;
-    }
-  });
-
-  return (
-    <Box ref={meshRef} args={[1, 1, 1]}>
-      <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.2} />
-    </Box>
-  );
-};
-
-const AnimatedTorus = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-      meshRef.current.rotation.z = state.clock.elapsedTime * 0.4;
-      meshRef.current.position.x = Math.cos(state.clock.elapsedTime * 0.5) * 0.5;
-    }
-  });
-
-  return (
-    <Torus ref={meshRef} args={[0.8, 0.3, 16, 100]} position={[2, 0, 0]}>
-      <meshStandardMaterial color="#666666" metalness={0.9} roughness={0.1} />
-    </Torus>
-  );
-};
+import React from 'react';
 
 const Logo3D: React.FC = () => {
   return (
-    <div className="w-full h-96 relative">
-      <Canvas className="bg-transparent">
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-        <ambientLight intensity={0.3} />
-        <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-        <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#ffffff" />
+    <div className="w-full h-96 relative flex items-center justify-center">
+      {/* Animated geometric shapes with pure CSS */}
+      <div className="relative">
+        {/* Floating cube */}
+        <div className="w-16 h-16 bg-white/10 border border-white/20 transform rotate-45 animate-pulse absolute -translate-x-8 -translate-y-8">
+        </div>
         
-        <AnimatedBox />
-        <AnimatedTorus />
+        {/* Floating circle */}
+        <div className="w-20 h-20 border-2 border-white/30 rounded-full absolute translate-x-12 -translate-y-4 animate-pulse animation-delay-1000">
+        </div>
         
-        {/* Fog for depth */}
-        <fog attach="fog" args={['#000000', 3, 10]} />
-      </Canvas>
+        {/* Central element */}
+        <div className="w-24 h-24 bg-gradient-to-br from-white/20 to-white/5 border border-white/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+          <span className="text-white font-bold text-2xl">C</span>
+        </div>
+        
+        {/* Additional floating elements */}
+        <div className="w-8 h-8 bg-white/20 rounded-full absolute -translate-x-16 translate-y-8 animate-pulse animation-delay-2000">
+        </div>
+        
+        <div className="w-12 h-12 border border-white/40 transform rotate-12 absolute translate-x-20 translate-y-6 animate-pulse animation-delay-3000">
+        </div>
+      </div>
+      
+      {/* Background glow effect */}
+      <div className="absolute inset-0 bg-gradient-radial from-white/5 via-transparent to-transparent rounded-full blur-xl">
+      </div>
     </div>
   );
 };
